@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>UW TOOL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- QR -->
+<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
+<!-- OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!-- Flatpickr Confirm (Done button) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.js"></script>
+
+<style>
+:root{
+  --red:#D6001C;
+  --bg:#f5f5f7;
+  --text:#232323;
+  --card:#ffffff;
+  --shadow:0 6px 18px rgba(0,0,0,.08);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  margin:16px;
+  background:var(--bg);
+  color:var(--text);
+}
+.container{
+  max-width:1100px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:70% 30%;
+  gap:16px;
+  align-items:start;
+}
+.left-col,.right-col{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.app{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+h1{
+  color:var(--red);
+  font-size:.95rem;
+  letter-spacing:.3px;
+  margin:0 0 12px 0;
+}
+label{
+  font-size:.85rem;
+  display:block;
+  margin:0 0 4px 0;
+}
+input,textarea{
+  width:100%;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid #d0d0d0;
+  font-size:.9rem;
+  margin-bottom:10px;
+}
+textarea{min-height:78px; resize:vertical}
+button{
+  padding:11px 14px;
+  border-radius:999px;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+.copy-btn{
+  background:var(--red);
+  color:white;
+  width:100%;
+  margin-top:6px;
+}
+.output{
+  font-weight:bold;
+  font-size:.9rem;
+  margin-top:8px;
+  white-space:pre-wrap;
+}
+.zone{
+  border:2px dashed var(--red);
+  border-radius:12px;
+  padding:18px;
+  text-align:center;
+  font-size:.86rem;
+  background:#fafafa;
+  cursor:pointer;
+  user-select:none;
+}
+a{color:var(--red); word-break:break-all;}
+
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  background:#ff0000;
+  color:#ffffff;
+  padding:12px 22px;
+  border-radius:7px;
+  font-size:.92rem;
+  box-shadow:0 10px 22px rgba(0,0,0,.25);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+  z-index:99999;
+}
+#toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(-6px);
+}
+
+.check-icon{
+  color:#fff;
+  margin-left:8px;
+  display:none;
+  animation:pop .25s ease-out;
+}
+@keyframes pop{
+  0%{transform:scale(0.6); opacity:0}
+  100%{transform:scale(1); opacity:1}
+}
+
+#ocrResult{
+  background:#FAFAFA;
+  box-shadow:0 10px 22px rgba(0,0,0,.12);
+  padding:14px;
+  border-radius:14px;
+  min-height:56px;
+}
+
+/* OCR loading */
+.loading{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-weight:bold;
+}
+.spinner{
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  border:3px solid rgba(214,0,28,.22);
+  border-top-color:rgba(214,0,28,1);
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Segmented buttons */
+.segmented{
+  display:flex;
+  background:#f3f3f6;
+  border:1px solid #e2e2e8;
+  border-radius:8px;        /* smaller radius */
+  padding:3px;              /* thinner */
+  gap:4px;
+  margin:6px 0 10px 0;
+}
+
+.seg-btn{
+  flex:1;
+  border:none;
+  border-radius:6px;        /* small */
+  padding:6px 8px;          /* compact */
+  font-weight:700;
+  font-size:.80rem;         /* smaller text */
+  cursor:pointer;
+  background:transparent;
+  color:#555;
+  transition:all .15s ease;
+}
+
+.seg-btn:hover{
+  background:#ececf2;
+}
+
+.seg-btn.active{
+  background: rgba(214, 0, 28, 0.12);   /* transparent red */
+  color: var(--red);
+  box-shadow: none;
+  border: 1.5px solid rgba(214, 0, 28, 0.35);
+}
+
+@media(max-width:768px){
+  .container{grid-template-columns:1fr;}
+}
+
+/* =========================
+   iOS-like Flatpickr (RED)
+   ========================= */
+/* ===== SMALLER CALENDAR ===== */
+
+.flatpickr-calendar{
+  width:280px !important;        /* smaller width */
+  padding:8px 10px 10px 10px !important;
+  border-radius:14px !important;
+}
+
+/* header text smaller */
+.flatpickr-current-month{
+  font-size:.9rem !important;
+}
+
+/* weekday labels smaller */
+span.flatpickr-weekday{
+  font-size:.70rem !important;
+}
+
+/* shrink day cells */
+.flatpickr-day{
+  height:30px !important;
+  line-height:30px !important;
+  max-width:38px !important;
+  font-size:.80rem !important;
+  border-radius:8px !important;
+}
+
+/* smaller arrows */
+.flatpickr-prev-month,
+.flatpickr-next-month{
+  width:28px !important;
+  height:28px !important;
+}
+
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg{
+  width:12px !important;
+  height:12px !important;
+}}
+
+.flatpickr-weekdays{
+  background:#fff !important;
+  margin-top:6px !important;
+}
+span.flatpickr-weekday{
+  color:#8b8b95 !important;
+  font-weight:700 !important;
+  font-size:.78rem !important;
+}
+
+.flatpickr-day{
+  border-radius:10px !important;
+  line-height:36px !important;
+  height:36px !important;
+  max-width:44px !important;
+  font-weight:700 !important;
+  color:#222 !important;
+}
+.flatpickr-day:hover{
+  background:#f2f2f5 !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange{
+  background:var(--red) !important;
+  border-color:var(--red) !important;
+  color:#fff !important;
+}
+
+.flatpickr-day.today{
+  border-color:var(--red) !important;
+}
+
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay{
+  color:#b9b9c3 !important;
+}
+
+/* Done button */
+.flatpickr-confirm{
+  border-top:0 !important;
+  padding:10px 0 0 0 !important;
+  display:flex !important;
+  justify-content:flex-end !important;
+}
+.flatpickr-confirm .flatpickr-confirm-button{
+  background:var(--red) !important;
+  border:0 !important;
+  color:#fff !important;
+  font-weight:800 !important;
+  border-radius:10px !important;
+  padding:10px 18px !important;
+  cursor:pointer !important;
+}
+.flatpickr-confirm .flatpickr-confirm-button:hover{
+  filter:brightness(.95);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="left-col">
+
+    <div class="app">
+      <h1>EFFECTIVE CONVERTER</h1>
+
+      <label>Policy Start Date</label>
+      <input type="text" id="start" placeholder="YYYY-MM-DD" autocomplete="off">
+
+      <label>Policy End Date</label>
+      <input type="text" id="end" readonly>
+
+      <label>Period Text</label>
+      <input type="text" id="text" readonly>
+
+      <div class="segmented">
+        <button class="seg-btn active" id="btn1y" type="button">1 Year</button>
+        <button class="seg-btn" id="btn3m" type="button">3 Month</button>
+      </div>
+
+      <button class="copy-btn" id="copyEffective" type="button">
+        Copy Effective
+        <i id="effectiveCheck" class="fa-solid fa-calendar-check check-icon"></i>
+      </button>
+    </div>
+
+    <div class="app">
+      <h1>OCR SCAN</h1>
+      <div class="zone" id="ocrZone" tabindex="0">Click and Paste</div>
+      <div class="output" id="ocrResult"></div>
+      <button class="copy-btn" id="copyOCRBtn" type="button">Copy OCR Text</button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+
+    <div class="app">
+      <h1>TITLE CONVERTER</h1>
+      <textarea id="paste" placeholder="Paste 2 lines here..."></textarea>
+      <div class="output" id="out"></div>
+      <button class="copy-btn" id="convertCopy" type="button">Convert & Copy</button>
+    </div>
+
+    <div class="app">
+      <h1>QR SCANNER</h1>
+      <div class="zone" id="qrZone" tabindex="0">Click and Paste</div>
+      <input type="file" id="qrFile" hidden accept="image/*">
+      <div class="output" id="qrResult"></div>
+    </div>
+
+    <div class="app">
+      <h1>DISCOUNT CALCULATOR</h1>
+
+      <label>Premium (Before Discount)</label>
+      <input type="number" id="beforeAmt" min="0" step="0.01">
+
+      <label>Premium (After Discount)</label>
+      <input type="number" id="afterAmt" min="0" step="0.01">
+
+      <label>Discount %</label>
+      <input type="number" id="discPct" placeholder="%" step="0.01" min="0" max="99.99">
+
+      <div class="output" id="discOut"></div>
+
+      <button class="copy-btn" id="copyDisc" type="button">
+        Copy Result
+        <i id="discCheck" class="fa-solid fa-check check-icon"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* Toast */
+const toastEl = document.getElementById("toast");
+let toastTimer = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1400);
+}
+
+/* Date helper */
+function toLocalDateInputValue(d = new Date()) {
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+
+/* EFFECTIVE */
+const start = document.getElementById("start");
+const end   = document.getElementById("end");
+const text  = document.getElementById("text");
+const btn1y = document.getElementById("btn1y");
+const btn3m = document.getElementById("btn3m");
+const copyEffective = document.getElementById("copyEffective");
+const effectiveCheck = document.getElementById("effectiveCheck");
+
+let days = 365;
+
+function formatDisplayDate(date){
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric"
+  });
+}
+
+function calcEffective(selectedDate){
+  const s = selectedDate || new Date(start.value);
+  const e = new Date(s);
+  e.setDate(e.getDate() + days - 1);
+
+  end.value = formatDisplayDate(e);
+
+  text.value =
+    `From ${formatDisplayDate(s)} to ${formatDisplayDate(e)} (Both dates inclusive)`;
+}
+flatpickr("#start", {
+  dateFormat: "d M Y",   // 25 Mar 2026
+  defaultDate: new Date(),
+  allowInput: false,
+  plugins: [
+    new confirmDatePlugin({
+      confirmText: "Done",
+      showAlways: false
+    })
+  ],
+  onChange: function(selectedDates){
+    if(selectedDates.length){
+      calcEffective(selectedDates[0]);
+    }
+  }
+});
+
+function setActive(btn){
+  document.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+btn1y.onclick = () => { days = 365; setActive(btn1y); calcEffective(); toast("1 Year selected"); };
+btn3m.onclick = () => { days = 89;  setActive(btn3m); calcEffective(); toast("3 Months selected"); };
+
+copyEffective.onclick = async () => {
+  await navigator.clipboard.writeText(text.value);
+  effectiveCheck.style.display = "inline-block";
+  toast("Effective copied");
+  setTimeout(() => effectiveCheck.style.display = "none", 1500);
+};
+
+calcEffective();
+
+/* TITLE */
+const paste = document.getElementById("paste");
+const out = document.getElementById("out");
+const convertCopy = document.getElementById("convertCopy");
+
+function convertTitle(){
+  const lines = paste.value.trim().split(/\n/).filter(Boolean);
+  if(lines.length < 2){
+    out.innerText = "";
+    toast("Need 2 lines to convert");
+    return;
+  }
+  const r = lines[0].replace(/\//g," ") + " - " + lines[1];
+  out.innerText = r;
+  navigator.clipboard.writeText(r);
+  toast("✅ Title converted & copied");
+}
+convertCopy.onclick = convertTitle;
+paste.addEventListener("paste", () => setTimeout(convertTitle, 50));
+
+/* QR */
+const qrZone = document.getElementById("qrZone");
+const qrFile = document.getElementById("qrFile");
+const qrResult = document.getElementById("qrResult");
+
+qrZone.onclick = () => { qrZone.focus(); toast("📋 Paste QR image (Ctrl+V)"); };
+
+qrFile.onchange = () => {
+  if(qrFile.files && qrFile.files[0]) scanQR(qrFile.files[0]);
+};
+
+qrZone.addEventListener("paste", (e) => {
+  for(const item of e.clipboardData.items){
+    if(item.type.startsWith("image")){
+      e.preventDefault();
+      scanQR(item.getAsFile());
+      return;
+    }
+  }
+});
+
+async function scanQR(file){
+  if(!file) return;
+  qrResult.textContent = "⏳ Scanning...";
+
+  if("BarcodeDetector" in window){
+    try{
+      const detector = new BarcodeDetector({ formats: ["qr_code"] });
+      const bmp = await createImageBitmap(file);
+      const codes = await detector.detect(bmp);
+      if(codes && codes.length){
+        const url = codes[0].rawValue;
+        showQrSuccess(url);
+        return;
+      }
+    }catch(e){}
+  }
+
+  const url = await scanWithJsQREnhanced(file);
+  if(url) showQrSuccess(url);
+  else{
+    qrResult.textContent = "QR not detected";
+    toast("QR not detected");
+  }
+}
+
+function showQrSuccess(url){
+  qrResult.innerHTML = `QR detected: <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+  toast("QR detected — opening...");
+  const w = window.open(url, "_blank", "noopener,noreferrer");
+  if(!w) toast("Popup blocked — tap the link to open");
+}
+
+function scanWithJsQREnhanced(file){
+  return new Promise((resolve) => {
+    const r = new FileReader();
+    r.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const scales = [1, 2, 3, 4, 5, 6];
+        const thresholds = [110, 130, 150, 170, 190];
+
+        for (const scale of scales) {
+          const c = document.createElement("canvas");
+          c.width = Math.round(img.width * scale);
+          c.height = Math.round(img.height * scale);
+
+          const ctx = c.getContext("2d", { willReadFrequently: true });
+          ctx.imageSmoothingEnabled = true;
+          ctx.drawImage(img, 0, 0, c.width, c.height);
+
+          let imageData = ctx.getImageData(0, 0, c.width, c.height);
+          let qr = jsQR(imageData.data, c.width, c.height, { inversionAttempts: "attemptBoth" });
+          if (qr && qr.data) return resolve(qr.data);
+
+          for (const threshold of thresholds) {
+            imageData = ctx.getImageData(0, 0, c.width, c.height);
+            const d = imageData.data;
+
+            for (let i = 0; i < d.length; i += 4) {
+              const gray = d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114;
+              const v = gray > threshold ? 255 : 0;
+              d[i] = d[i+1] = d[i+2] = v;
+            }
+
+            qr = jsQR(imageData.data, c.width, c.height, { inversionAttempts: "attemptBoth" });
+            if (qr && qr.data) return resolve(qr.data);
+          }
+        }
+        resolve("");
+      };
+      img.src = r.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+/* DISCOUNT (results only, copy number only) */
+const beforeAmt = document.getElementById("beforeAmt");
+const afterAmt  = document.getElementById("afterAmt");
+const discPct   = document.getElementById("discPct");
+const discOut   = document.getElementById("discOut");
+const copyDisc  = document.getElementById("copyDisc");
+const discCheck = document.getElementById("discCheck");
+
+let discLastEdited = "before";
+
+beforeAmt.addEventListener("input", () => { discLastEdited = "before"; calcDiscount(); });
+afterAmt.addEventListener("input",  () => { discLastEdited = "after";  calcDiscount(); });
+discPct.addEventListener("input", calcDiscount);
+
+function fmtMoney(n){
+  if(!Number.isFinite(n)) return "";
+  return `$${n.toFixed(2)}`;
+}
+
+function calcDiscount(){
+  const b = parseFloat(beforeAmt.value);
+  const a = parseFloat(afterAmt.value);
+  const p = parseFloat(discPct.value);
+
+  discOut.innerText = "";
+  if(!Number.isFinite(p)) return "";
+  if(p < 0 || p >= 100){ discOut.innerText = "Discount must be 0–99.99"; return ""; }
+
+  const factor = 1 - (p/100);
+  if(factor <= 0){ discOut.innerText = "Discount cannot be 100%"; return ""; }
+
+  if(discLastEdited === "before" && Number.isFinite(b)){
+    const remaining = b * factor;
+    discOut.innerText = `Remaining: ${fmtMoney(remaining)}`;
+    return remaining.toFixed(2);
+  }
+
+  if(discLastEdited === "after" && Number.isFinite(a)){
+    const original = a / factor;
+    discOut.innerText = `Original: ${fmtMoney(original)}`;
+    return original.toFixed(2);
+  }
+
+  if(Number.isFinite(b) && !Number.isFinite(a)){
+    discLastEdited = "before";
+    return calcDiscount();
+  }
+  if(Number.isFinite(a) && !Number.isFinite(b)){
+    discLastEdited = "after";
+    return calcDiscount();
+  }
+
+  return "";
+}
+
+copyDisc.onclick = async () => {
+  const txt = calcDiscount();
+  if(!txt){ toast("Enter amount + discount %"); return; }
+  await navigator.clipboard.writeText(txt);
+  toast("Copied");
+  discCheck.style.display = "inline-block";
+  setTimeout(() => discCheck.style.display = "none", 1500);
+};
+
+/* OCR */
+const ocrZone = document.getElementById("ocrZone");
+const ocrResult = document.getElementById("ocrResult");
+const copyOCRBtn = document.getElementById("copyOCRBtn");
+
+ocrZone.onclick = () => { ocrZone.focus(); toast("Paste image (Ctrl+V) or drag & drop"); };
+
+ocrZone.addEventListener("paste", (e) => {
+  for (const item of e.clipboardData.items) {
+    if (item.type.startsWith("image")) {
+      e.preventDefault();
+      runOCR(item.getAsFile());
+      return;
+    }
+  }
+  toast("Paste an IMAGE (not text)");
+});
+
+ocrZone.addEventListener("dragover", (e) => { e.preventDefault(); ocrZone.style.opacity = "0.86"; });
+ocrZone.addEventListener("dragleave", () => { ocrZone.style.opacity = "1"; });
+ocrZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  ocrZone.style.opacity = "1";
+  const file = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (file && file.type.startsWith("image/")) runOCR(file);
+  else toast("Drop an image file");
+});
+
+function setOcrLoading(){
+  ocrResult.innerHTML = `<span class="loading"><span class="spinner"></span>Scanning...</span>`;
+}
+
+async function runOCR(file){
+  try{
+    setOcrLoading();
+    toast("⏳ OCR scanning...");
+
+    const dataUrl = await resizeImageToDataURL(file, 1800);
+
+    const { data } = await Tesseract.recognize(
+      dataUrl,
+      "eng+khm",
+      { tessedit_pageseg_mode: 6 }
+    );
+
+    const mixedText = (data.text || "").trim();
+    ocrResult.innerText = mixedText || "No text detected";
+    toast(mixedText ? "OCR done" : "No text detected");
+
+  }catch(err){
+    console.error(err);
+    ocrResult.innerText = "OCR failed";
+    toast("OCR failed");
+  }
+}
+
+function resizeImageToDataURL(file, maxSize = 1800){
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width;
+        let h = img.height;
+        const scale = Math.min(1, maxSize / Math.max(w, h));
+        w = Math.round(w * scale);
+        h = Math.round(h * scale);
+
+        const c = document.createElement("canvas");
+        c.width = w;
+        c.height = h;
+        const ctx = c.getContext("2d", { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL("image/png"));
+      };
+      img.onerror = reject;
+      img.src = fr.result;
+    };
+    fr.onerror = reject;
+    fr.readAsDataURL(file);
+  });
+}
+
+copyOCRBtn.onclick = () => {
+  navigator.clipboard.writeText(ocrResult.innerText || "");
+  toast("OCR copied");
+};
+</script>
+
+</body>
+</html>
