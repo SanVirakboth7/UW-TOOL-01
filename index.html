@@ -198,6 +198,27 @@ a{color:var(--red); word-break:break-all;}
   border: 1.5px solid rgba(214, 0, 28, 0.35);
 }
 
+
+.seg-right{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.days-badge{
+  font-size:.72rem;
+  font-weight:800;
+  color:var(--red);
+  background:rgba(214,0,28,.10);
+  border:1px solid rgba(214,0,28,.28);
+  padding:8px 12px;
+  border-radius:5px;
+  line-height:1;
+  white-space:nowrap;
+}
+
+
 @media(max-width:768px){
   .container{grid-template-columns:1fr;}
 }
@@ -320,15 +341,20 @@ span.flatpickr-weekday{
       <input type="text" id="start" placeholder="YYYY-MM-DD" autocomplete="off">
 
       <label>Policy End Date</label>
-      <input type="text" id="end" readonly>
+      <input type="text" id="end" placeholder="Select end date" autocomplete="off">
 
       <label>Period Text</label>
       <input type="text" id="text" readonly>
 
       <div class="segmented">
-        <button class="seg-btn active" id="btn1y" type="button">1 Year</button>
-        <button class="seg-btn" id="btn3m" type="button">3 Month</button>
-      </div>
+  <button class="seg-btn active" id="btn1y" type="button">1 Year</button>
+
+  <div class="seg-right">
+    <button class="seg-btn" id="btn3m" type="button">3 Month</button>
+    <span class="days-badge" id="daysBadge">365d</span>
+  </div>
+</div>
+
 
       <button class="copy-btn" id="copyEffective" type="button">
         Copy Effective
@@ -404,17 +430,24 @@ function toLocalDateInputValue(d = new Date()) {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
 
-/* EFFECTIVE */
-const start = document.getElementById("start");
-const end   = document.getElementById("end");
-const text  = document.getElementById("text");
-const btn1y = document.getElementById("btn1y");
-const btn3m = document.getElementById("btn3m");
+
+/* =========================
+   EFFECTIVE (CLEAN VERSION)
+   ========================= */
+
+const startInput = document.getElementById("start");
+const endInput   = document.getElementById("end");
+const text       = document.getElementById("text");
+const btn1y      = document.getElementById("btn1y");
+const btn3m      = document.getElementById("btn3m");
 const copyEffective = document.getElementById("copyEffective");
 const effectiveCheck = document.getElementById("effectiveCheck");
+const daysBadge  = document.getElementById("daysBadge");
 
 let days = 365;
+let startPicker, endPicker;
 
+/* Format date */
 function formatDisplayDate(date){
   return date.toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -423,40 +456,96 @@ function formatDisplayDate(date){
   });
 }
 
+/* Update badge */
+function updateDaysBadge(){
+  daysBadge.textContent = `${days} DAYS`;
+}
+
+/* Update text */
+function updatePeriodText(s, e){
+  text.value = `From ${formatDisplayDate(s)} to ${formatDisplayDate(e)} (Both dates inclusive)`;
+}
+
+/* Auto calculate end date */
 function calcEffective(selectedDate){
-  const s = selectedDate || new Date(start.value);
+  const s = selectedDate || startPicker.selectedDates[0];
+  if(!s) return;
+
   const e = new Date(s);
   e.setDate(e.getDate() + days - 1);
 
-  end.value = formatDisplayDate(e);
-
-  text.value =
-    `From ${formatDisplayDate(s)} to ${formatDisplayDate(e)} (Both dates inclusive)`;
+  endPicker.setDate(e, true);
+  updatePeriodText(s, e);
 }
-flatpickr("#start", {
-  dateFormat: "d M Y",   // 25 Mar 2026
+
+/* Start Picker */
+startPicker = flatpickr("#start", {
+  dateFormat: "d M Y",
   defaultDate: new Date(),
   allowInput: false,
   plugins: [
-    new confirmDatePlugin({
-      confirmText: "Done",
-      showAlways: false
-    })
+    new confirmDatePlugin({ confirmText: "Done", showAlways: false })
   ],
   onChange: function(selectedDates){
-    if(selectedDates.length){
-      calcEffective(selectedDates[0]);
-    }
+    if(!selectedDates.length) return;
+    const s = selectedDates[0];
+    endPicker.set("minDate", s);
+    calcEffective(s);
   }
 });
 
+/* End Picker (editable) */
+endPicker = flatpickr("#end", {
+  dateFormat: "d M Y",
+  allowInput: false,
+  plugins: [
+    new confirmDatePlugin({ confirmText: "Done", showAlways: false })
+  ],
+  onChange: function(selectedDates){
+    if(!selectedDates.length) return;
+
+    const s = startPicker.selectedDates[0];
+    const e = selectedDates[0];
+    if(!s) return;
+
+    const diff = Math.round((e - s)/(1000*60*60*24)) + 1;
+
+    if(diff < 1){
+      toast("End date must be after start date");
+      endPicker.clear();
+      return;
+    }
+
+    days = diff;
+    updateDaysBadge();
+    updatePeriodText(s, e);
+    toast("End date updated");
+  }
+});
+
+/* Segmented buttons */
 function setActive(btn){
   document.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 }
-btn1y.onclick = () => { days = 365; setActive(btn1y); calcEffective(); toast("1 Year selected"); };
-btn3m.onclick = () => { days = 89;  setActive(btn3m); calcEffective(); toast("3 Months selected"); };
 
+btn1y.onclick = () => {
+  days = 365;
+  setActive(btn1y);
+  updateDaysBadge();
+  calcEffective();
+  toast("1 Year selected");
+};
+
+btn3m.onclick = () => {
+  days = 89;
+  setActive(btn3m);
+  updateDaysBadge();
+  calcEffective();
+  toast("3 Months selected");
+};
+
+/* Copy */
 copyEffective.onclick = async () => {
   await navigator.clipboard.writeText(text.value);
   effectiveCheck.style.display = "inline-block";
@@ -464,7 +553,12 @@ copyEffective.onclick = async () => {
   setTimeout(() => effectiveCheck.style.display = "none", 1500);
 };
 
+/* Init */
+updateDaysBadge();
 calcEffective();
+
+
+
 
 /* TITLE */
 const paste = document.getElementById("paste");
@@ -739,5 +833,4 @@ copyOCRBtn.onclick = () => {
 </body>
 
 </html>
-
 
