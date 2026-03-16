@@ -5,7 +5,8 @@
 <title>UW TOOL</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="icon" type="image/svg+xml" href="lin-redhat-svgrepo-com.svg">
+<link rel="icon" type="image/svg+xml" href="multi-select-svgrepo-com.svg">
+
 <!-- QR -->
 <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
 
@@ -20,7 +21,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<!-- Flatpickr Confirm (Done button) -->
+<!-- Flatpickr Confirm -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.js"></script>
 
@@ -172,44 +173,38 @@ a{color:var(--red); word-break:break-all;}
   display:flex;
   background:#f3f3f6;
   border:1px solid #e2e2e8;
-  border-radius:8px;        /* smaller radius */
-  padding:3px;              /* thinner */
+  border-radius:8px;
+  padding:3px;
   gap:4px;
   margin:6px 0 10px 0;
 }
-
 .seg-btn{
   flex:1;
   border:none;
-  border-radius:6px;        /* small */
-  padding:6px 8px;          /* compact */
+  border-radius:6px;
+  padding:6px 8px;
   font-weight:700;
-  font-size:.80rem;         /* smaller text */
+  font-size:.80rem;
   cursor:pointer;
   background:transparent;
   color:#555;
   transition:all .15s ease;
 }
-
 .seg-btn:hover{
   background:#ececf2;
 }
-
 .seg-btn.active{
-  background: rgba(214, 0, 28, 0.12);   /* transparent red */
-  color: var(--red);
-  box-shadow: none;
-  border: 1.5px solid rgba(214, 0, 28, 0.35);
+  background:rgba(214,0,28,0.12);
+  color:var(--red);
+  box-shadow:none;
+  border:1.5px solid rgba(214,0,28,0.35);
 }
-
-
 .seg-right{
   flex:1;
   display:flex;
   align-items:center;
   gap:6px;
 }
-
 .days-badge{
   font-size:.72rem;
   font-weight:800;
@@ -222,72 +217,92 @@ a{color:var(--red); word-break:break-all;}
   white-space:nowrap;
 }
 
-
 @media(max-width:768px){
   .container{grid-template-columns:1fr;}
 }
 
 /* =========================
    iOS-like Flatpickr (RED)
+   Smaller + full calendar
    ========================= */
-/* ===== SMALLER CALENDAR ===== */
 
 .flatpickr-calendar{
-  width:280px !important;        /* smaller width */
-  padding:8px 10px 10px 10px !important;
+  width:280px !important;
+  min-width:280px !important;
+  max-width:280px !important;
+  padding:8px 10px 10px !important;
   border-radius:14px !important;
+  box-sizing:border-box !important;
+  overflow:visible !important;
 }
 
-/* header text smaller */
+.flatpickr-innerContainer{
+  display:block !important;
+}
+
+.flatpickr-rContainer{
+  width:100% !important;
+}
+
+.flatpickr-months{
+  margin-bottom:4px !important;
+}
+
 .flatpickr-current-month{
   font-size:.9rem !important;
+  padding-top:2px !important;
 }
 
-/* weekday labels smaller */
-span.flatpickr-weekday{
-  font-size:.70rem !important;
+.flatpickr-monthDropdown-months,
+.numInputWrapper{
+  font-size:.9rem !important;
 }
-
-/* shrink day cells */
-.flatpickr-day{
-  height:30px !important;
-  line-height:30px !important;
-  max-width:38px !important;
-  font-size:.80rem !important;
-  border-radius:8px !important;
-}
-
-/* smaller arrows */
-.flatpickr-prev-month,
-.flatpickr-next-month{
-  width:28px !important;
-  height:28px !important;
-}
-
-.flatpickr-prev-month svg,
-.flatpickr-next-month svg{
-  width:12px !important;
-  height:12px !important;
-}}
 
 .flatpickr-weekdays{
   background:#fff !important;
   margin-top:6px !important;
+  width:100% !important;
 }
+
+.flatpickr-weekdaycontainer{
+  width:100% !important;
+  display:grid !important;
+  grid-template-columns:repeat(7,1fr) !important;
+}
+
 span.flatpickr-weekday{
   color:#8b8b95 !important;
   font-weight:700 !important;
-  font-size:.78rem !important;
+  font-size:.7rem !important;
+}
+
+.flatpickr-days{
+  width:100% !important;
+}
+
+.dayContainer{
+  width:100% !important;
+  min-width:100% !important;
+  max-width:100% !important;
+  display:grid !important;
+  grid-template-columns:repeat(7,1fr) !important;
+  gap:2px !important;
+  justify-items:center !important;
 }
 
 .flatpickr-day{
-  border-radius:10px !important;
-  line-height:36px !important;
-  height:36px !important;
-  max-width:44px !important;
+  height:30px !important;
+  line-height:30px !important;
+  width:36px !important;
+  max-width:36px !important;
+  min-width:36px !important;
+  font-size:.8rem !important;
   font-weight:700 !important;
+  border-radius:8px !important;
   color:#222 !important;
+  margin:0 !important;
 }
+
 .flatpickr-day:hover{
   background:#f2f2f5 !important;
 }
@@ -309,10 +324,23 @@ span.flatpickr-weekday{
   color:#b9b9c3 !important;
 }
 
+.flatpickr-prev-month,
+.flatpickr-next-month{
+  width:28px !important;
+  height:28px !important;
+  padding:6px !important;
+}
+
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg{
+  width:12px !important;
+  height:12px !important;
+}
+
 /* Done button */
 .flatpickr-confirm{
   border-top:0 !important;
-  padding:10px 0 0 0 !important;
+  padding:10px 0 0 !important;
   display:flex !important;
   justify-content:flex-end !important;
 }
@@ -337,7 +365,7 @@ span.flatpickr-weekday{
   font-size:45px;
   font-weight:100;
   margin:30px auto 10px;
-  font-family: 'bungee', sans-serif;
+  font-family:'Bungee',sans-serif;
   letter-spacing:2px;
   text-transform:uppercase;
   background:linear-gradient(90deg,#D2042D);
@@ -363,12 +391,10 @@ span.flatpickr-weekday{
   font-size:16px;
   color:#6b7280;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-">
-</p>
+"></p>
 
 <div class="container">
 
-  <!-- LEFT -->
   <div class="left-col">
 
     <div class="app">
@@ -384,14 +410,13 @@ span.flatpickr-weekday{
       <input type="text" id="text" readonly>
 
       <div class="segmented">
-  <button class="seg-btn active" id="btn1y" type="button">1 Year</button>
+        <button class="seg-btn active" id="btn1y" type="button">1 Year</button>
 
-  <div class="seg-right">
-    <button class="seg-btn" id="btn3m" type="button">3 Month</button>
-    <span class="days-badge" id="daysBadge">365d</span>
-  </div>
-</div>
-
+        <div class="seg-right">
+          <button class="seg-btn" id="btn3m" type="button">3 Month</button>
+          <span class="days-badge" id="daysBadge">365 DAYS</span>
+        </div>
+      </div>
 
       <button class="copy-btn" id="copyEffective" type="button">
         Copy Effective
@@ -408,7 +433,6 @@ span.flatpickr-weekday{
 
   </div>
 
-  <!-- RIGHT -->
   <div class="right-col">
 
     <div class="app">
@@ -461,17 +485,9 @@ function toast(msg){
   toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1400);
 }
 
-/* Date helper */
-function toLocalDateInputValue(d = new Date()) {
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-}
-
-
 /* =========================
-   EFFECTIVE (CLEAN VERSION)
+   EFFECTIVE CONVERTER
    ========================= */
-
 const startInput = document.getElementById("start");
 const endInput   = document.getElementById("end");
 const text       = document.getElementById("text");
@@ -484,7 +500,6 @@ const daysBadge  = document.getElementById("daysBadge");
 let days = 365;
 let startPicker, endPicker;
 
-/* Format date */
 function formatDisplayDate(date){
   return date.toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -493,29 +508,57 @@ function formatDisplayDate(date){
   });
 }
 
-/* Update badge */
 function updateDaysBadge(){
   daysBadge.textContent = `${days} DAYS`;
 }
 
-/* Update text */
 function updatePeriodText(s, e){
   text.value = `From ${formatDisplayDate(s)} to ${formatDisplayDate(e)} (Both dates inclusive)`;
 }
 
-/* Auto calculate end date */
+function calcThreeMonthEnd(startDate){
+  const e = new Date(startDate);
+  const originalDay = e.getDate();
+
+  e.setDate(1);
+  e.setMonth(e.getMonth() + 3);
+
+  const lastDayOfTargetMonth = new Date(
+    e.getFullYear(),
+    e.getMonth() + 1,
+    0
+  ).getDate();
+
+  e.setDate(Math.min(originalDay, lastDayOfTargetMonth));
+  e.setDate(e.getDate() - 1);
+
+  return e;
+}
+
+
 function calcEffective(selectedDate){
   const s = selectedDate || startPicker.selectedDates[0];
   if(!s) return;
 
-  const e = new Date(s);
-  e.setDate(e.getDate() + days - 1);
+  let e;
+
+  if(days === "3m"){
+    e = calcThreeMonthEnd(s);
+  }else{
+    e = new Date(s);
+    e.setDate(e.getDate() + days - 1);
+  }
 
   endPicker.setDate(e, true);
   updatePeriodText(s, e);
+
+  const actualDays = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+  daysBadge.textContent = `${actualDays} DAYS`;
 }
 
-/* Start Picker */
+
+
+
 startPicker = flatpickr("#start", {
   dateFormat: "d M Y",
   defaultDate: new Date(),
@@ -531,7 +574,6 @@ startPicker = flatpickr("#start", {
   }
 });
 
-/* End Picker (editable) */
 endPicker = flatpickr("#end", {
   dateFormat: "d M Y",
   allowInput: false,
@@ -545,7 +587,7 @@ endPicker = flatpickr("#end", {
     const e = selectedDates[0];
     if(!s) return;
 
-    const diff = Math.round((e - s)/(1000*60*60*24)) + 1;
+    const diff = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
 
     if(diff < 1){
       toast("End date must be after start date");
@@ -560,7 +602,6 @@ endPicker = flatpickr("#end", {
   }
 });
 
-/* Segmented buttons */
 function setActive(btn){
   document.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
@@ -575,14 +616,12 @@ btn1y.onclick = () => {
 };
 
 btn3m.onclick = () => {
-  days = 89;
+  days = "3m";
   setActive(btn3m);
-  updateDaysBadge();
   calcEffective();
   toast("3 Months selected");
 };
 
-/* Copy */
 copyEffective.onclick = async () => {
   await navigator.clipboard.writeText(text.value);
   effectiveCheck.style.display = "inline-block";
@@ -590,12 +629,8 @@ copyEffective.onclick = async () => {
   setTimeout(() => effectiveCheck.style.display = "none", 1500);
 };
 
-/* Init */
 updateDaysBadge();
 calcEffective();
-
-
-
 
 /* TITLE */
 const paste = document.getElementById("paste");
@@ -612,7 +647,7 @@ function convertTitle(){
   const r = lines[0].replace(/\//g," ") + " - " + lines[1];
   out.innerText = r;
   navigator.clipboard.writeText(r);
-  toast("✅ Title converted & copied");
+  toast("Title converted & copied");
 }
 convertCopy.onclick = convertTitle;
 paste.addEventListener("paste", () => setTimeout(convertTitle, 50));
@@ -622,7 +657,7 @@ const qrZone = document.getElementById("qrZone");
 const qrFile = document.getElementById("qrFile");
 const qrResult = document.getElementById("qrResult");
 
-qrZone.onclick = () => { qrZone.focus(); toast("📋 Paste QR image (Ctrl+V)"); };
+qrZone.onclick = () => { qrZone.focus(); toast("Paste QR image (Ctrl+V)"); };
 
 qrFile.onchange = () => {
   if(qrFile.files && qrFile.files[0]) scanQR(qrFile.files[0]);
@@ -640,7 +675,7 @@ qrZone.addEventListener("paste", (e) => {
 
 async function scanQR(file){
   if(!file) return;
-  qrResult.textContent = "⏳ Scanning...";
+  qrResult.textContent = "Scanning...";
 
   if("BarcodeDetector" in window){
     try{
@@ -665,9 +700,9 @@ async function scanQR(file){
 
 function showQrSuccess(url){
   qrResult.innerHTML = `QR detected: <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-  toast("QR detected — opening...");
+  toast("QR detected - opening...");
   const w = window.open(url, "_blank", "noopener,noreferrer");
-  if(!w) toast("Popup blocked — tap the link to open");
+  if(!w) toast("Popup blocked - tap the link to open");
 }
 
 function scanWithJsQREnhanced(file){
@@ -679,7 +714,7 @@ function scanWithJsQREnhanced(file){
         const scales = [1, 2, 3, 4, 5, 6];
         const thresholds = [110, 130, 150, 170, 190];
 
-        for (const scale of scales) {
+        for(const scale of scales){
           const c = document.createElement("canvas");
           c.width = Math.round(img.width * scale);
           c.height = Math.round(img.height * scale);
@@ -690,20 +725,20 @@ function scanWithJsQREnhanced(file){
 
           let imageData = ctx.getImageData(0, 0, c.width, c.height);
           let qr = jsQR(imageData.data, c.width, c.height, { inversionAttempts: "attemptBoth" });
-          if (qr && qr.data) return resolve(qr.data);
+          if(qr && qr.data) return resolve(qr.data);
 
-          for (const threshold of thresholds) {
+          for(const threshold of thresholds){
             imageData = ctx.getImageData(0, 0, c.width, c.height);
             const d = imageData.data;
 
-            for (let i = 0; i < d.length; i += 4) {
+            for(let i = 0; i < d.length; i += 4){
               const gray = d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114;
               const v = gray > threshold ? 255 : 0;
               d[i] = d[i+1] = d[i+2] = v;
             }
 
             qr = jsQR(imageData.data, c.width, c.height, { inversionAttempts: "attemptBoth" });
-            if (qr && qr.data) return resolve(qr.data);
+            if(qr && qr.data) return resolve(qr.data);
           }
         }
         resolve("");
@@ -714,7 +749,7 @@ function scanWithJsQREnhanced(file){
   });
 }
 
-/* DISCOUNT (results only, copy number only) */
+/* DISCOUNT */
 const beforeAmt = document.getElementById("beforeAmt");
 const afterAmt  = document.getElementById("afterAmt");
 const discPct   = document.getElementById("discPct");
@@ -725,7 +760,7 @@ const discCheck = document.getElementById("discCheck");
 let discLastEdited = "before";
 
 beforeAmt.addEventListener("input", () => { discLastEdited = "before"; calcDiscount(); });
-afterAmt.addEventListener("input",  () => { discLastEdited = "after";  calcDiscount(); });
+afterAmt.addEventListener("input", () => { discLastEdited = "after"; calcDiscount(); });
 discPct.addEventListener("input", calcDiscount);
 
 function fmtMoney(n){
@@ -740,10 +775,16 @@ function calcDiscount(){
 
   discOut.innerText = "";
   if(!Number.isFinite(p)) return "";
-  if(p < 0 || p >= 100){ discOut.innerText = "Discount must be 0–99.99"; return ""; }
+  if(p < 0 || p >= 100){
+    discOut.innerText = "Discount must be 0-99.99";
+    return "";
+  }
 
-  const factor = 1 - (p/100);
-  if(factor <= 0){ discOut.innerText = "Discount cannot be 100%"; return ""; }
+  const factor = 1 - (p / 100);
+  if(factor <= 0){
+    discOut.innerText = "Discount cannot be 100%";
+    return "";
+  }
 
   if(discLastEdited === "before" && Number.isFinite(b)){
     const remaining = b * factor;
@@ -761,6 +802,7 @@ function calcDiscount(){
     discLastEdited = "before";
     return calcDiscount();
   }
+
   if(Number.isFinite(a) && !Number.isFinite(b)){
     discLastEdited = "after";
     return calcDiscount();
@@ -771,7 +813,10 @@ function calcDiscount(){
 
 copyDisc.onclick = async () => {
   const txt = calcDiscount();
-  if(!txt){ toast("Enter amount + discount %"); return; }
+  if(!txt){
+    toast("Enter amount + discount %");
+    return;
+  }
   await navigator.clipboard.writeText(txt);
   toast("Copied");
   discCheck.style.display = "inline-block";
@@ -786,8 +831,8 @@ const copyOCRBtn = document.getElementById("copyOCRBtn");
 ocrZone.onclick = () => { ocrZone.focus(); toast("Paste image (Ctrl+V) or drag & drop"); };
 
 ocrZone.addEventListener("paste", (e) => {
-  for (const item of e.clipboardData.items) {
-    if (item.type.startsWith("image")) {
+  for(const item of e.clipboardData.items){
+    if(item.type.startsWith("image")){
       e.preventDefault();
       runOCR(item.getAsFile());
       return;
@@ -796,13 +841,20 @@ ocrZone.addEventListener("paste", (e) => {
   toast("Paste an IMAGE (not text)");
 });
 
-ocrZone.addEventListener("dragover", (e) => { e.preventDefault(); ocrZone.style.opacity = "0.86"; });
-ocrZone.addEventListener("dragleave", () => { ocrZone.style.opacity = "1"; });
+ocrZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  ocrZone.style.opacity = "0.86";
+});
+
+ocrZone.addEventListener("dragleave", () => {
+  ocrZone.style.opacity = "1";
+});
+
 ocrZone.addEventListener("drop", (e) => {
   e.preventDefault();
   ocrZone.style.opacity = "1";
   const file = e.dataTransfer.files && e.dataTransfer.files[0];
-  if (file && file.type.startsWith("image/")) runOCR(file);
+  if(file && file.type.startsWith("image/")) runOCR(file);
   else toast("Drop an image file");
 });
 
@@ -813,7 +865,7 @@ function setOcrLoading(){
 async function runOCR(file){
   try{
     setOcrLoading();
-    toast("⏳ OCR scanning...");
+    toast("OCR scanning...");
 
     const dataUrl = await resizeImageToDataURL(file, 1800);
 
@@ -868,8 +920,4 @@ copyOCRBtn.onclick = () => {
 </script>
 
 </body>
-
 </html>
-
-
-
