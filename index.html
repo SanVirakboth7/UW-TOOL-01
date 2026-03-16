@@ -2,468 +2,669 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>UW TOOL</title>
+<title>KLAB JAB 2.0</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="icon" type="image/svg+xml" href="multi-select-svgrepo-com.svg">
-
-<!-- QR -->
 <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Jockey+One&display=swap" rel="stylesheet">
-
-<!-- OCR -->
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
-<!-- Flatpickr -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-<!-- Flatpickr Confirm -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --red:#D6001C;
-  --bg:#f5f5f7;
-  --text:#232323;
-  --card:#ffffff;
-  --shadow:0 6px 18px rgba(0,0,0,.08);
-  --radius:16px;
+  --red:#C8001A;
+  --red-light:rgba(200,0,26,0.08);
+  --red-mid:rgba(200,0,26,0.18);
+  --red-glow:rgba(200,0,26,0.22);
+  --bg:#F0F0F3;
+  --surface:#FFFFFF;
+  --surface2:#F7F7F9;
+  --border:#E2E2E8;
+  --border-strong:#D0D0D8;
+  --text:#111118;
+  --text-muted:#6B6B7A;
+  --text-subtle:#9898A8;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,.07), 0 1px 4px rgba(0,0,0,.05);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.10), 0 2px 8px rgba(0,0,0,.06);
+  --radius:18px;
+  --radius-sm:10px;
+  --radius-xs:7px;
 }
-*{box-sizing:border-box}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
 body{
-  font-family:Arial,Helvetica,sans-serif;
-  margin:16px;
-  background:var(--bg);
-  color:var(--text);
+  font-family:'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 24px 16px 60px;
 }
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  opacity:.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+/* ── HEADER ── */
+.header{
+  max-width:1100px;
+  margin:0 auto 32px;
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+
+.header-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:5px 14px 5px 10px;
+  font-size:.72rem;
+  font-weight:700;
+  color:var(--text-muted);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+  box-shadow:var(--shadow-sm);
+}
+
+.pulse-dot{
+  width:7px; height:7px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 0 0 var(--red-glow);
+  animation:pulse-ring 2s ease infinite;
+}
+
+@keyframes pulse-ring{
+  0%  { box-shadow:0 0 0 0 var(--red-glow); }
+  60% { box-shadow:0 0 0 7px rgba(200,0,26,0); }
+  100%{ box-shadow:0 0 0 0 rgba(200,0,26,0); }
+}
+
+.header h1{
+  font-family:'Syne', sans-serif;
+  font-size:clamp(2.4rem, 6vw, 4rem);
+  font-weight:800;
+  letter-spacing:-.02em;
+  color:var(--text);
+  line-height:1;
+  margin-bottom:6px;
+}
+
+.header h1 span{
+  color: var(--red);
+}
+
+.header-sub{
+  font-family:'DM Mono', monospace;
+  font-size:.75rem;
+  color:var(--text-subtle);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.header-rule{
+  width:48px; height:3px;
+  background:var(--red);
+  border-radius:999px;
+  margin:14px auto 0;
+}
+
+/* ── LAYOUT ── */
 .container{
   max-width:1100px;
-  margin:auto;
+  margin:0 auto;
   display:grid;
-  grid-template-columns:70% 30%;
+  grid-template-columns:65% 1fr;
   gap:16px;
   align-items:start;
+  position:relative;
+  z-index:1;
 }
-.left-col,.right-col{
+
+.left-col, .right-col{
   display:flex;
   flex-direction:column;
   gap:16px;
 }
-.app{
-  background:var(--card);
+
+/* ── CARDS ── */
+.card{
+  background:var(--surface);
   border-radius:var(--radius);
-  padding:20px;
-  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+  padding:22px 22px 20px;
+  box-shadow:var(--shadow-md);
+  position:relative;
+  overflow:hidden;
+  animation:card-up .45s ease both;
 }
-h1{
-  color:var(--red);
-  font-size:.95rem;
-  letter-spacing:.3px;
-  margin:0 0 12px 0;
+
+.card::before{
+  content:'';
+  position:absolute;
+  inset:0 0 auto 0;
+  height:2px;
+  background:linear-gradient(90deg, var(--red) 0%, rgba(200,0,26,.2) 100%);
+  opacity:0;
+  transition:opacity .25s ease;
+  border-radius:var(--radius) var(--radius) 0 0;
 }
+
+.card:hover::before{ opacity:1; }
+
+.card:nth-child(1){ animation-delay:.05s; }
+.card:nth-child(2){ animation-delay:.12s; }
+.card:nth-child(3){ animation-delay:.18s; }
+.card:nth-child(4){ animation-delay:.24s; }
+.card:nth-child(5){ animation-delay:.30s; }
+
+@keyframes card-up{
+  from{ opacity:0; transform:translateY(18px); }
+  to  { opacity:1; transform:translateY(0); }
+}
+
+/* ── CARD HEADER ── */
+.card-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.card-icon{
+  width:32px; height:32px;
+  border-radius:9px;
+  background:var(--red-light);
+  border:1px solid var(--red-mid);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.card-icon svg{
+  width:15px; height:15px;
+  fill:none;
+  stroke:var(--red);
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.card-title{
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+}
+
+/* ── FORM ELEMENTS ── */
 label{
-  font-size:.85rem;
   display:block;
-  margin:0 0 4px 0;
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  margin:0 0 5px;
 }
-input,textarea{
+
+input[type="text"],
+input[type="number"],
+textarea{
   width:100%;
-  padding:8px 10px;
-  border-radius:10px;
-  border:1px solid #d0d0d0;
-  font-size:.9rem;
-  margin-bottom:10px;
+  padding:10px 12px;
+  border-radius:var(--radius-sm);
+  border:1.5px solid var(--border);
+  background:var(--surface2);
+  font-family:'DM Mono', monospace;
+  font-size:.87rem;
+  color:var(--text);
+  margin-bottom:12px;
+  transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
+  outline:none;
 }
-textarea{min-height:78px; resize:vertical}
-button{
-  padding:11px 14px;
+
+input:focus, textarea:focus{
+  border-color:var(--red);
+  box-shadow:0 0 0 3px var(--red-light);
+  background:var(--surface);
+}
+
+textarea{
+  min-height:82px;
+  resize:vertical;
+  font-family:'DM Mono', monospace;
+}
+
+.field-group{ margin-bottom:4px; }
+
+/* ── BUTTONS ── */
+.btn-primary{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:100%;
+  padding:12px 16px;
   border-radius:999px;
   border:none;
-  font-weight:bold;
-  cursor:pointer;
-}
-.copy-btn{
   background:var(--red);
-  color:white;
-  width:100%;
-  margin-top:6px;
-}
-.output{
-  font-weight:bold;
-  font-size:.9rem;
-  margin-top:8px;
-  white-space:pre-wrap;
-}
-.zone{
-  border:2px dashed var(--red);
-  border-radius:12px;
-  padding:18px;
-  text-align:center;
-  font-size:.86rem;
-  background:#fafafa;
+  color:#fff;
+  font-family:'Syne', sans-serif;
+  font-size:.85rem;
+  font-weight:700;
+  letter-spacing:.04em;
   cursor:pointer;
-  user-select:none;
+  margin-top:8px;
+  transition:all .18s ease;
+  box-shadow:0 4px 14px var(--red-glow);
 }
-a{color:var(--red); word-break:break-all;}
 
-#toast{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  background:#ff0000;
-  color:#ffffff;
-  padding:12px 22px;
-  border-radius:7px;
-  font-size:.92rem;
-  box-shadow:0 10px 22px rgba(0,0,0,.25);
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .18s ease, transform .18s ease;
-  z-index:99999;
+.btn-primary:hover{
+  background:#A8001A;
+  transform:translateY(-1px);
+  box-shadow:0 6px 20px rgba(200,0,26,.32);
 }
-#toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(-6px);
+
+.btn-primary:active{
+  transform:translateY(0);
+  box-shadow:0 2px 8px var(--red-glow);
 }
 
 .check-icon{
-  color:#fff;
-  margin-left:8px;
   display:none;
   animation:pop .25s ease-out;
 }
 @keyframes pop{
-  0%{transform:scale(0.6); opacity:0}
-  100%{transform:scale(1); opacity:1}
+  0%  { transform:scale(0.5); opacity:0; }
+  100%{ transform:scale(1);   opacity:1; }
 }
 
-#ocrResult{
-  background:#FAFAFA;
-  box-shadow:0 10px 22px rgba(0,0,0,.12);
-  padding:14px;
-  border-radius:14px;
-  min-height:56px;
+/* ── OUTPUT DISPLAY ── */
+.output{
+  font-family:'DM Mono', monospace;
+  font-size:.85rem;
+  font-weight:500;
+  color:var(--text);
+  margin-top:10px;
+  white-space:pre-wrap;
+  padding:12px 14px;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  min-height:44px;
+  line-height:1.55;
 }
 
-/* OCR loading */
-.loading{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  font-weight:bold;
+.output:empty{
+  display:none;
 }
-.spinner{
-  width:16px;
-  height:16px;
-  border-radius:50%;
-  border:3px solid rgba(214,0,28,.22);
-  border-top-color:rgba(214,0,28,1);
-  animation:spin .8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
 
-/* Segmented buttons */
+.output a{
+  color:var(--red);
+  word-break:break-all;
+}
+
+/* ── SEGMENTED CONTROL ── */
 .segmented{
   display:flex;
-  background:#f3f3f6;
-  border:1px solid #e2e2e8;
-  border-radius:8px;
-  padding:3px;
+  align-items:center;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:4px;
   gap:4px;
-  margin:6px 0 10px 0;
+  margin:0 0 12px;
 }
+
 .seg-btn{
   flex:1;
   border:none;
-  border-radius:6px;
-  padding:6px 8px;
+  border-radius:7px;
+  padding:8px 10px;
+  font-family:'Syne', sans-serif;
   font-weight:700;
-  font-size:.80rem;
+  font-size:.78rem;
+  letter-spacing:.04em;
   cursor:pointer;
   background:transparent;
-  color:#555;
-  transition:all .15s ease;
+  color:var(--text-muted);
+  transition:all .18s ease;
 }
-.seg-btn:hover{
-  background:#ececf2;
-}
+
+.seg-btn:hover{ background:var(--surface); color:var(--text); }
+
 .seg-btn.active{
-  background:rgba(214,0,28,0.12);
-  color:var(--red);
-  box-shadow:none;
-  border:1.5px solid rgba(214,0,28,0.35);
+  background:var(--red);
+  color:#fff;
+  box-shadow:0 2px 10px var(--red-glow);
 }
+
 .seg-right{
   flex:1;
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:7px;
 }
+
 .days-badge{
-  font-size:.72rem;
-  font-weight:800;
+  font-family:'DM Mono', monospace;
+  font-size:.7rem;
+  font-weight:500;
   color:var(--red);
-  background:rgba(214,0,28,.10);
-  border:1px solid rgba(214,0,28,.28);
-  padding:8px 12px;
-  border-radius:5px;
-  line-height:1;
+  background:var(--red-light);
+  border:1px solid var(--red-mid);
+  padding:6px 10px;
+  border-radius:6px;
+  white-space:nowrap;
+  letter-spacing:.06em;
+}
+
+/* ── DROP / PASTE ZONE ── */
+.zone{
+  border:2px dashed var(--border-strong);
+  border-radius:var(--radius-sm);
+  padding:22px 16px;
+  text-align:center;
+  font-size:.82rem;
+  font-weight:600;
+  color:var(--text-muted);
+  background:var(--surface2);
+  cursor:pointer;
+  user-select:none;
+  transition:all .18s ease;
+  letter-spacing:.03em;
+}
+
+.zone:hover{
+  border-color:var(--red);
+  background:var(--red-light);
+  color:var(--red);
+}
+
+/* ── DISCOUNT GRID ── */
+.disc-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 14px;
+}
+
+/* ── OCR LOADING ── */
+.loading{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  font-family:'DM Mono', monospace;
+  font-size:.84rem;
+  font-weight:500;
+  color:var(--text-muted);
+}
+
+.spinner{
+  width:15px; height:15px;
+  border-radius:50%;
+  border:2.5px solid var(--red-mid);
+  border-top-color:var(--red);
+  animation:spin .75s linear infinite;
+}
+
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%) translateY(10px);
+  background:var(--text);
+  color:#fff;
+  padding:10px 20px 10px 14px;
+  border-radius:999px;
+  font-family:'Syne', sans-serif;
+  font-size:.82rem;
+  font-weight:600;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  gap:9px;
   white-space:nowrap;
 }
 
-@media(max-width:768px){
-  .container{grid-template-columns:1fr;}
+#toast .t-dot{
+  width:7px; height:7px;
+  border-radius:50%;
+  background:var(--red);
+  flex-shrink:0;
 }
 
-/* =========================
-   iOS-like Flatpickr (RED)
-   Smaller + full calendar
-   ========================= */
+#toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
 
+/* ── FLATPICKR OVERRIDES ── */
 .flatpickr-calendar{
-  width:280px !important;
-  min-width:280px !important;
-  max-width:280px !important;
+  width:276px !important;
+  min-width:276px !important;
+  max-width:276px !important;
   padding:8px 10px 10px !important;
   border-radius:14px !important;
-  box-sizing:border-box !important;
-  overflow:visible !important;
-}
-
-.flatpickr-innerContainer{
-  display:block !important;
-}
-
-.flatpickr-rContainer{
-  width:100% !important;
-}
-
-.flatpickr-months{
-  margin-bottom:4px !important;
-}
-
-.flatpickr-current-month{
-  font-size:.9rem !important;
-  padding-top:2px !important;
-}
-
-.flatpickr-monthDropdown-months,
-.numInputWrapper{
-  font-size:.9rem !important;
-}
-
-.flatpickr-weekdays{
+  box-shadow:var(--shadow-lg) !important;
+  border:1px solid var(--border) !important;
   background:#fff !important;
-  margin-top:6px !important;
-  width:100% !important;
 }
-
-.flatpickr-weekdaycontainer{
-  width:100% !important;
-  display:grid !important;
-  grid-template-columns:repeat(7,1fr) !important;
-}
-
-span.flatpickr-weekday{
-  color:#8b8b95 !important;
-  font-weight:700 !important;
-  font-size:.7rem !important;
-}
-
-.flatpickr-days{
-  width:100% !important;
-}
-
+.flatpickr-innerContainer{ display:block !important; }
+.flatpickr-rContainer{ width:100% !important; }
+.flatpickr-months{ margin-bottom:4px !important; }
+.flatpickr-current-month{ font-size:.88rem !important; font-family:'Syne',sans-serif; font-weight:700; }
+.flatpickr-monthDropdown-months,.numInputWrapper{ font-size:.88rem !important; }
+.flatpickr-weekdays{ background:#fff !important; margin-top:4px !important; width:100% !important; }
+.flatpickr-weekdaycontainer{ width:100% !important; display:grid !important; grid-template-columns:repeat(7,1fr) !important; }
+span.flatpickr-weekday{ color:var(--text-muted) !important; font-weight:700 !important; font-size:.68rem !important; }
+.flatpickr-days{ width:100% !important; }
 .dayContainer{
-  width:100% !important;
-  min-width:100% !important;
-  max-width:100% !important;
-  display:grid !important;
-  grid-template-columns:repeat(7,1fr) !important;
-  gap:2px !important;
-  justify-items:center !important;
+  width:100% !important; min-width:100% !important; max-width:100% !important;
+  display:grid !important; grid-template-columns:repeat(7,1fr) !important;
+  gap:2px !important; justify-items:center !important;
 }
-
 .flatpickr-day{
-  height:30px !important;
-  line-height:30px !important;
-  width:36px !important;
-  max-width:36px !important;
-  min-width:36px !important;
-  font-size:.8rem !important;
-  font-weight:700 !important;
-  border-radius:8px !important;
-  color:#222 !important;
-  margin:0 !important;
+  height:30px !important; line-height:30px !important;
+  width:34px !important; max-width:34px !important; min-width:34px !important;
+  font-size:.78rem !important; font-weight:700 !important;
+  border-radius:8px !important; color:#222 !important; margin:0 !important;
 }
-
-.flatpickr-day:hover{
-  background:#f2f2f5 !important;
+.flatpickr-day:hover{ background:var(--surface2) !important; }
+.flatpickr-day.selected,.flatpickr-day.startRange,.flatpickr-day.endRange{
+  background:var(--red) !important; border-color:var(--red) !important; color:#fff !important;
 }
-
-.flatpickr-day.selected,
-.flatpickr-day.startRange,
-.flatpickr-day.endRange{
-  background:var(--red) !important;
-  border-color:var(--red) !important;
-  color:#fff !important;
-}
-
-.flatpickr-day.today{
-  border-color:var(--red) !important;
-}
-
-.flatpickr-day.prevMonthDay,
-.flatpickr-day.nextMonthDay{
-  color:#b9b9c3 !important;
-}
-
-.flatpickr-prev-month,
-.flatpickr-next-month{
-  width:28px !important;
-  height:28px !important;
-  padding:6px !important;
-}
-
-.flatpickr-prev-month svg,
-.flatpickr-next-month svg{
-  width:12px !important;
-  height:12px !important;
-}
-
-/* Done button */
-.flatpickr-confirm{
-  border-top:0 !important;
-  padding:10px 0 0 !important;
-  display:flex !important;
-  justify-content:flex-end !important;
-}
+.flatpickr-day.today{ border-color:var(--red) !important; }
+.flatpickr-day.prevMonthDay,.flatpickr-day.nextMonthDay{ color:#ccc !important; }
+.flatpickr-prev-month,.flatpickr-next-month{ width:28px !important; height:28px !important; padding:6px !important; }
+.flatpickr-prev-month svg,.flatpickr-next-month svg{ width:12px !important; height:12px !important; }
+.flatpickr-confirm{ border-top:0 !important; padding:10px 0 0 !important; display:flex !important; justify-content:flex-end !important; }
 .flatpickr-confirm .flatpickr-confirm-button{
-  background:var(--red) !important;
-  border:0 !important;
-  color:#fff !important;
-  font-weight:800 !important;
-  border-radius:10px !important;
-  padding:10px 18px !important;
-  cursor:pointer !important;
+  background:var(--red) !important; border:0 !important; color:#fff !important;
+  font-weight:800 !important; border-radius:10px !important; padding:9px 18px !important; cursor:pointer !important;
+  font-family:'Syne',sans-serif !important; font-size:.82rem !important;
 }
-.flatpickr-confirm .flatpickr-confirm-button:hover{
-  filter:brightness(.95);
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .container{ grid-template-columns:1fr; }
+  .disc-grid{ grid-template-columns:1fr; }
 }
 </style>
 </head>
-
 <body>
-<h1 style="
-  text-align:center;
-  font-size:45px;
-  font-weight:100;
-  margin:30px auto 10px;
-  font-family:'Bungee',sans-serif;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  background:linear-gradient(90deg,#D2042D);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  line-height:1.1;
-">
-  KLAB JAB (2.0)
-</h1>
 
-<div style="
-  width:120px;
-  height:6px;
-  margin:0 auto 24px;
-  border-radius:999px;
-  background:linear-gradient(90deg,#EE4B2B,#D22B2B,#D2042D);
-  box-shadow:0 10px 30px rgba(0,114,255,0.35);
-"></div>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-badge">
+    <span class="pulse-dot"></span>
+    Underwriting Toolkit
+  </div>
+  <h1>KLAB <span>JAB</span> <span style="font-size:.55em; color:var(--text-subtle); font-weight:600; letter-spacing:.04em;">2.0</span></h1>
+  <p class="header-sub">Insurance Processing Suite</p>
+  <div class="header-rule"></div>
+</header>
 
-<p style="
-  text-align:center;
-  margin:0 0 20px;
-  font-size:16px;
-  color:#6b7280;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-"></p>
-
+<!-- LAYOUT -->
 <div class="container">
 
+  <!-- LEFT COL -->
   <div class="left-col">
 
-    <div class="app">
-      <h1>EFFECTIVE CONVERTER</h1>
+    <!-- EFFECTIVE CONVERTER -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+        </div>
+        <span class="card-title">Effective Converter</span>
+      </div>
 
-      <label>Policy Start Date</label>
-      <input type="text" id="start" placeholder="YYYY-MM-DD" autocomplete="off">
+      <div class="field-group">
+        <label>Policy Start Date</label>
+        <input type="text" id="start" placeholder="Select start date" autocomplete="off">
+      </div>
 
-      <label>Policy End Date</label>
-      <input type="text" id="end" placeholder="Select end date" autocomplete="off">
+      <div class="field-group">
+        <label>Policy End Date</label>
+        <input type="text" id="end" placeholder="Select end date" autocomplete="off">
+      </div>
 
-      <label>Period Text</label>
-      <input type="text" id="text" readonly>
+      <div class="field-group">
+        <label>Period Text</label>
+        <input type="text" id="text" readonly>
+      </div>
 
       <div class="segmented">
         <button class="seg-btn active" id="btn1y" type="button">1 Year</button>
-
         <div class="seg-right">
           <button class="seg-btn" id="btn3m" type="button">3 Month</button>
           <span class="days-badge" id="daysBadge">365 DAYS</span>
         </div>
       </div>
 
-      <button class="copy-btn" id="copyEffective" type="button">
+      <button class="btn-primary" id="copyEffective" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         Copy Effective
         <i id="effectiveCheck" class="fa-solid fa-calendar-check check-icon"></i>
       </button>
     </div>
 
-    <div class="app">
-      <h1>OCR SCAN</h1>
-      <div class="zone" id="ocrZone" tabindex="0">Click and Paste</div>
-      <div class="output" id="ocrResult"></div>
-      <button class="copy-btn" id="copyOCRBtn" type="button">Copy OCR Text</button>
+    <!-- OCR SCAN -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+        </div>
+        <span class="card-title">OCR Scan</span>
+      </div>
+      <div class="zone" id="ocrZone" tabindex="0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto 6px;display:block;opacity:.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Click then Paste Image (Ctrl+V) or Drop
+      </div>
+      <div id="ocrResult" class="output" style="display:none;"></div>
+      <button class="btn-primary" id="copyOCRBtn" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copy OCR Text
+      </button>
     </div>
 
   </div>
 
+  <!-- RIGHT COL -->
   <div class="right-col">
 
-    <div class="app">
-      <h1>TITLE CONVERTER</h1>
-      <textarea id="paste" placeholder="Paste 2 lines here..."></textarea>
-      <div class="output" id="out"></div>
-      <button class="copy-btn" id="convertCopy" type="button">Convert & Copy</button>
+    <!-- TITLE CONVERTER -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        </div>
+        <span class="card-title">Title Converter</span>
+      </div>
+      <label>Paste 2 Lines</label>
+      <textarea id="paste" placeholder="Line 1&#10;Line 2"></textarea>
+      <div id="out" class="output"></div>
+      <button class="btn-primary" id="convertCopy" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Convert &amp; Copy
+      </button>
     </div>
 
-    <div class="app">
-      <h1>QR SCANNER</h1>
-      <div class="zone" id="qrZone" tabindex="0">Click and Paste</div>
+    <!-- QR SCANNER -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polyline points="4 7 4 4 7 4"/><polyline points="17 4 20 4 20 7"/><polyline points="20 17 20 20 17 20"/><polyline points="7 20 4 20 4 17"/><rect x="7" y="7" width="3" height="3"/><rect x="14" y="7" width="3" height="3"/><rect x="14" y="14" width="3" height="3"/><rect x="7" y="14" width="3" height="3"/></svg>
+        </div>
+        <span class="card-title">QR Scanner</span>
+      </div>
+      <div class="zone" id="qrZone" tabindex="0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto 6px;display:block;opacity:.5"><polyline points="4 7 4 4 7 4"/><polyline points="17 4 20 4 20 7"/><polyline points="20 17 20 20 17 20"/><polyline points="7 20 4 20 4 17"/></svg>
+        Click then Paste QR Image (Ctrl+V)
+      </div>
       <input type="file" id="qrFile" hidden accept="image/*">
-      <div class="output" id="qrResult"></div>
+      <div id="qrResult" class="output"></div>
     </div>
 
-    <div class="app">
-      <h1>DISCOUNT CALCULATOR</h1>
+    <!-- DISCOUNT CALCULATOR -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+        </div>
+        <span class="card-title">Discount Calculator</span>
+      </div>
 
-      <label>Premium (Before Discount)</label>
-      <input type="number" id="beforeAmt" min="0" step="0.01">
+      <div class="disc-grid">
+        <div class="field-group">
+          <label>Before Discount</label>
+          <input type="number" id="beforeAmt" min="0" step="0.01" placeholder="0.00">
+        </div>
+        <div class="field-group">
+          <label>After Discount</label>
+          <input type="number" id="afterAmt" min="0" step="0.01" placeholder="0.00">
+        </div>
+      </div>
 
-      <label>Premium (After Discount)</label>
-      <input type="number" id="afterAmt" min="0" step="0.01">
+      <div class="field-group">
+        <label>Discount %</label>
+        <input type="number" id="discPct" placeholder="e.g. 15" step="0.01" min="0" max="99.99">
+      </div>
 
-      <label>Discount %</label>
-      <input type="number" id="discPct" placeholder="%" step="0.01" min="0" max="99.99">
+      <div id="discOut" class="output"></div>
 
-      <div class="output" id="discOut"></div>
-
-      <button class="copy-btn" id="copyDisc" type="button">
+      <button class="btn-primary" id="copyDisc" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         Copy Result
         <i id="discCheck" class="fa-solid fa-check check-icon"></i>
       </button>
@@ -472,129 +673,99 @@ span.flatpickr-weekday{
   </div>
 </div>
 
-<div id="toast" role="status" aria-live="polite"></div>
+<!-- TOAST -->
+<div id="toast" role="status" aria-live="polite">
+  <span class="t-dot"></span>
+  <span id="toastMsg"></span>
+</div>
 
 <script>
-/* Toast */
-const toastEl = document.getElementById("toast");
+/* ── TOAST ── */
+const toastEl  = document.getElementById("toast");
+const toastMsg = document.getElementById("toastMsg");
 let toastTimer = null;
 function toast(msg){
-  toastEl.textContent = msg;
+  toastMsg.textContent = msg;
   toastEl.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1400);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
 }
 
-/* =========================
-   EFFECTIVE CONVERTER
-   ========================= */
-const startInput = document.getElementById("start");
-const endInput   = document.getElementById("end");
-const text       = document.getElementById("text");
-const btn1y      = document.getElementById("btn1y");
-const btn3m      = document.getElementById("btn3m");
-const copyEffective = document.getElementById("copyEffective");
+/* ── EFFECTIVE CONVERTER ── */
+const startInput     = document.getElementById("start");
+const endInput       = document.getElementById("end");
+const textInput      = document.getElementById("text");
+const btn1y          = document.getElementById("btn1y");
+const btn3m          = document.getElementById("btn3m");
+const copyEffective  = document.getElementById("copyEffective");
 const effectiveCheck = document.getElementById("effectiveCheck");
-const daysBadge  = document.getElementById("daysBadge");
+const daysBadge      = document.getElementById("daysBadge");
 
 let days = 365;
 let startPicker, endPicker;
 
 function formatDisplayDate(date){
-  return date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric"
-  });
+  return date.toLocaleDateString("en-GB",{day:"2-digit",month:"long",year:"numeric"});
 }
 
 function updateDaysBadge(){
   daysBadge.textContent = `${days} DAYS`;
 }
 
-function updatePeriodText(s, e){
-  text.value = `From ${formatDisplayDate(s)} to ${formatDisplayDate(e)} (Both dates inclusive)`;
+function updatePeriodText(s,e){
+  textInput.value = `From ${formatDisplayDate(s)} to ${formatDisplayDate(e)} (Both dates inclusive)`;
 }
 
 function calcThreeMonthEnd(startDate){
   const e = new Date(startDate);
   const originalDay = e.getDate();
-
   e.setDate(1);
   e.setMonth(e.getMonth() + 3);
-
-  const lastDayOfTargetMonth = new Date(
-    e.getFullYear(),
-    e.getMonth() + 1,
-    0
-  ).getDate();
-
-  e.setDate(Math.min(originalDay, lastDayOfTargetMonth));
+  const lastDay = new Date(e.getFullYear(), e.getMonth()+1, 0).getDate();
+  e.setDate(Math.min(originalDay, lastDay));
   e.setDate(e.getDate() - 1);
-
   return e;
 }
-
 
 function calcEffective(selectedDate){
   const s = selectedDate || startPicker.selectedDates[0];
   if(!s) return;
-
   let e;
-
   if(days === "3m"){
     e = calcThreeMonthEnd(s);
-  }else{
+  } else {
     e = new Date(s);
     e.setDate(e.getDate() + days - 1);
   }
-
   endPicker.setDate(e, true);
   updatePeriodText(s, e);
-
-  const actualDays = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+  const actualDays = Math.round((e - s)/(1000*60*60*24)) + 1;
   daysBadge.textContent = `${actualDays} DAYS`;
 }
 
-
-
-
-startPicker = flatpickr("#start", {
-  dateFormat: "d M Y",
+startPicker = flatpickr("#start",{
+  dateFormat:"d M Y",
   defaultDate: new Date(),
   allowInput: false,
-  plugins: [
-    new confirmDatePlugin({ confirmText: "Done", showAlways: false })
-  ],
-  onChange: function(selectedDates){
+  plugins:[new confirmDatePlugin({confirmText:"Done",showAlways:false})],
+  onChange(selectedDates){
     if(!selectedDates.length) return;
-    const s = selectedDates[0];
-    endPicker.set("minDate", s);
-    calcEffective(s);
+    endPicker.set("minDate", selectedDates[0]);
+    calcEffective(selectedDates[0]);
   }
 });
 
-endPicker = flatpickr("#end", {
-  dateFormat: "d M Y",
-  allowInput: false,
-  plugins: [
-    new confirmDatePlugin({ confirmText: "Done", showAlways: false })
-  ],
-  onChange: function(selectedDates){
+endPicker = flatpickr("#end",{
+  dateFormat:"d M Y",
+  allowInput:false,
+  plugins:[new confirmDatePlugin({confirmText:"Done",showAlways:false})],
+  onChange(selectedDates){
     if(!selectedDates.length) return;
-
     const s = startPicker.selectedDates[0];
     const e = selectedDates[0];
     if(!s) return;
-
-    const diff = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
-
-    if(diff < 1){
-      toast("End date must be after start date");
-      endPicker.clear();
-      return;
-    }
-
+    const diff = Math.round((e - s)/(1000*60*60*24)) + 1;
+    if(diff < 1){ toast("End date must be after start date"); endPicker.clear(); return; }
     days = diff;
     updateDaysBadge();
     updatePeriodText(s, e);
@@ -603,153 +774,119 @@ endPicker = flatpickr("#end", {
 });
 
 function setActive(btn){
-  document.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".seg-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
 }
 
-btn1y.onclick = () => {
-  days = 365;
-  setActive(btn1y);
-  updateDaysBadge();
-  calcEffective();
-  toast("1 Year selected");
-};
-
-btn3m.onclick = () => {
-  days = "3m";
-  setActive(btn3m);
-  calcEffective();
-  toast("3 Months selected");
-};
+btn1y.onclick = () => { days=365; setActive(btn1y); updateDaysBadge(); calcEffective(); toast("1 Year selected"); };
+btn3m.onclick = () => { days="3m"; setActive(btn3m); calcEffective(); toast("3 Months selected"); };
 
 copyEffective.onclick = async () => {
-  await navigator.clipboard.writeText(text.value);
-  effectiveCheck.style.display = "inline-block";
-  toast("Effective copied");
-  setTimeout(() => effectiveCheck.style.display = "none", 1500);
+  if(!textInput.value){ toast("No date selected"); return; }
+  await navigator.clipboard.writeText(textInput.value);
+  effectiveCheck.style.display="inline-block";
+  toast("Effective dates copied");
+  setTimeout(()=>effectiveCheck.style.display="none", 1500);
 };
 
 updateDaysBadge();
 calcEffective();
 
-/* TITLE */
-const paste = document.getElementById("paste");
-const out = document.getElementById("out");
-const convertCopy = document.getElementById("convertCopy");
+/* ── TITLE CONVERTER ── */
+const paste      = document.getElementById("paste");
+const out        = document.getElementById("out");
+const convertCopy= document.getElementById("convertCopy");
 
 function convertTitle(){
   const lines = paste.value.trim().split(/\n/).filter(Boolean);
-  if(lines.length < 2){
-    out.innerText = "";
-    toast("Need 2 lines to convert");
-    return;
-  }
+  if(lines.length < 2){ out.innerText=""; toast("Need 2 lines"); return; }
   const r = lines[0].replace(/\//g," ") + " - " + lines[1];
   out.innerText = r;
+  out.style.display = "block";
   navigator.clipboard.writeText(r);
   toast("Title converted & copied");
 }
 convertCopy.onclick = convertTitle;
-paste.addEventListener("paste", () => setTimeout(convertTitle, 50));
+paste.addEventListener("paste", ()=>setTimeout(convertTitle,50));
 
-/* QR */
-const qrZone = document.getElementById("qrZone");
-const qrFile = document.getElementById("qrFile");
+/* ── QR SCANNER ── */
+const qrZone   = document.getElementById("qrZone");
+const qrFile   = document.getElementById("qrFile");
 const qrResult = document.getElementById("qrResult");
 
-qrZone.onclick = () => { qrZone.focus(); toast("Paste QR image (Ctrl+V)"); };
+qrZone.onclick = ()=>{ qrZone.focus(); toast("Paste QR image (Ctrl+V)"); };
+qrFile.onchange = ()=>{ if(qrFile.files&&qrFile.files[0]) scanQR(qrFile.files[0]); };
 
-qrFile.onchange = () => {
-  if(qrFile.files && qrFile.files[0]) scanQR(qrFile.files[0]);
-};
-
-qrZone.addEventListener("paste", (e) => {
+qrZone.addEventListener("paste",(e)=>{
   for(const item of e.clipboardData.items){
-    if(item.type.startsWith("image")){
-      e.preventDefault();
-      scanQR(item.getAsFile());
-      return;
-    }
+    if(item.type.startsWith("image")){ e.preventDefault(); scanQR(item.getAsFile()); return; }
   }
 });
 
 async function scanQR(file){
   if(!file) return;
-  qrResult.textContent = "Scanning...";
-
+  qrResult.textContent="Scanning...";
+  qrResult.style.display="block";
   if("BarcodeDetector" in window){
     try{
-      const detector = new BarcodeDetector({ formats: ["qr_code"] });
+      const detector = new BarcodeDetector({formats:["qr_code"]});
       const bmp = await createImageBitmap(file);
       const codes = await detector.detect(bmp);
-      if(codes && codes.length){
-        const url = codes[0].rawValue;
-        showQrSuccess(url);
-        return;
-      }
+      if(codes&&codes.length){ showQrSuccess(codes[0].rawValue); return; }
     }catch(e){}
   }
-
   const url = await scanWithJsQREnhanced(file);
   if(url) showQrSuccess(url);
-  else{
-    qrResult.textContent = "QR not detected";
-    toast("QR not detected");
-  }
+  else{ qrResult.textContent="QR not detected"; toast("QR not detected"); }
 }
 
 function showQrSuccess(url){
-  qrResult.innerHTML = `QR detected: <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+  qrResult.innerHTML=`QR: <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+  qrResult.style.display="block";
   toast("QR detected - opening...");
-  const w = window.open(url, "_blank", "noopener,noreferrer");
-  if(!w) toast("Popup blocked - tap the link to open");
+  const w = window.open(url,"_blank","noopener,noreferrer");
+  if(!w) toast("Popup blocked - tap the link");
 }
 
 function scanWithJsQREnhanced(file){
-  return new Promise((resolve) => {
-    const r = new FileReader();
-    r.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        const scales = [1, 2, 3, 4, 5, 6];
-        const thresholds = [110, 130, 150, 170, 190];
-
+  return new Promise((resolve)=>{
+    const r=new FileReader();
+    r.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        const scales=[1,2,3,4,5,6];
+        const thresholds=[110,130,150,170,190];
         for(const scale of scales){
-          const c = document.createElement("canvas");
-          c.width = Math.round(img.width * scale);
-          c.height = Math.round(img.height * scale);
-
-          const ctx = c.getContext("2d", { willReadFrequently: true });
-          ctx.imageSmoothingEnabled = true;
-          ctx.drawImage(img, 0, 0, c.width, c.height);
-
-          let imageData = ctx.getImageData(0, 0, c.width, c.height);
-          let qr = jsQR(imageData.data, c.width, c.height, { inversionAttempts: "attemptBoth" });
-          if(qr && qr.data) return resolve(qr.data);
-
+          const c=document.createElement("canvas");
+          c.width=Math.round(img.width*scale);
+          c.height=Math.round(img.height*scale);
+          const ctx=c.getContext("2d",{willReadFrequently:true});
+          ctx.imageSmoothingEnabled=true;
+          ctx.drawImage(img,0,0,c.width,c.height);
+          let id=ctx.getImageData(0,0,c.width,c.height);
+          let qr=jsQR(id.data,c.width,c.height,{inversionAttempts:"attemptBoth"});
+          if(qr&&qr.data) return resolve(qr.data);
           for(const threshold of thresholds){
-            imageData = ctx.getImageData(0, 0, c.width, c.height);
-            const d = imageData.data;
-
-            for(let i = 0; i < d.length; i += 4){
-              const gray = d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114;
-              const v = gray > threshold ? 255 : 0;
-              d[i] = d[i+1] = d[i+2] = v;
+            id=ctx.getImageData(0,0,c.width,c.height);
+            const d=id.data;
+            for(let i=0;i<d.length;i+=4){
+              const gray=d[i]*.299+d[i+1]*.587+d[i+2]*.114;
+              const v=gray>threshold?255:0;
+              d[i]=d[i+1]=d[i+2]=v;
             }
-
-            qr = jsQR(imageData.data, c.width, c.height, { inversionAttempts: "attemptBoth" });
-            if(qr && qr.data) return resolve(qr.data);
+            qr=jsQR(id.data,c.width,c.height,{inversionAttempts:"attemptBoth"});
+            if(qr&&qr.data) return resolve(qr.data);
           }
         }
         resolve("");
       };
-      img.src = r.result;
+      img.src=r.result;
     };
     r.readAsDataURL(file);
   });
 }
 
-/* DISCOUNT */
+/* ── DISCOUNT CALCULATOR ── */
 const beforeAmt = document.getElementById("beforeAmt");
 const afterAmt  = document.getElementById("afterAmt");
 const discPct   = document.getElementById("discPct");
@@ -758,166 +895,121 @@ const copyDisc  = document.getElementById("copyDisc");
 const discCheck = document.getElementById("discCheck");
 
 let discLastEdited = "before";
-
-beforeAmt.addEventListener("input", () => { discLastEdited = "before"; calcDiscount(); });
-afterAmt.addEventListener("input", () => { discLastEdited = "after"; calcDiscount(); });
+beforeAmt.addEventListener("input",()=>{ discLastEdited="before"; calcDiscount(); });
+afterAmt.addEventListener("input", ()=>{ discLastEdited="after";  calcDiscount(); });
 discPct.addEventListener("input", calcDiscount);
 
-function fmtMoney(n){
-  if(!Number.isFinite(n)) return "";
-  return `$${n.toFixed(2)}`;
-}
+function fmtMoney(n){ return Number.isFinite(n)?`$${n.toFixed(2)}`:""; }
 
 function calcDiscount(){
-  const b = parseFloat(beforeAmt.value);
-  const a = parseFloat(afterAmt.value);
-  const p = parseFloat(discPct.value);
-
-  discOut.innerText = "";
+  const b=parseFloat(beforeAmt.value);
+  const a=parseFloat(afterAmt.value);
+  const p=parseFloat(discPct.value);
+  discOut.innerText="";
+  discOut.style.display="none";
   if(!Number.isFinite(p)) return "";
-  if(p < 0 || p >= 100){
-    discOut.innerText = "Discount must be 0-99.99";
-    return "";
-  }
-
-  const factor = 1 - (p / 100);
-  if(factor <= 0){
-    discOut.innerText = "Discount cannot be 100%";
-    return "";
-  }
-
-  if(discLastEdited === "before" && Number.isFinite(b)){
-    const remaining = b * factor;
-    discOut.innerText = `Remaining: ${fmtMoney(remaining)}`;
+  if(p<0||p>=100){ discOut.innerText="Discount must be 0-99.99"; discOut.style.display="block"; return ""; }
+  const factor=1-(p/100);
+  if(factor<=0){ discOut.innerText="Discount cannot be 100%"; discOut.style.display="block"; return ""; }
+  if(discLastEdited==="before"&&Number.isFinite(b)){
+    const remaining=b*factor;
+    discOut.innerText=`Remaining: ${fmtMoney(remaining)}`;
+    discOut.style.display="block";
     return remaining.toFixed(2);
   }
-
-  if(discLastEdited === "after" && Number.isFinite(a)){
-    const original = a / factor;
-    discOut.innerText = `Original: ${fmtMoney(original)}`;
+  if(discLastEdited==="after"&&Number.isFinite(a)){
+    const original=a/factor;
+    discOut.innerText=`Original: ${fmtMoney(original)}`;
+    discOut.style.display="block";
     return original.toFixed(2);
   }
-
-  if(Number.isFinite(b) && !Number.isFinite(a)){
-    discLastEdited = "before";
-    return calcDiscount();
-  }
-
-  if(Number.isFinite(a) && !Number.isFinite(b)){
-    discLastEdited = "after";
-    return calcDiscount();
-  }
-
   return "";
 }
 
-copyDisc.onclick = async () => {
-  const txt = calcDiscount();
-  if(!txt){
-    toast("Enter amount + discount %");
-    return;
-  }
+copyDisc.onclick = async ()=>{
+  const txt=calcDiscount();
+  if(!txt){ toast("Enter amount + discount %"); return; }
   await navigator.clipboard.writeText(txt);
-  toast("Copied");
-  discCheck.style.display = "inline-block";
-  setTimeout(() => discCheck.style.display = "none", 1500);
+  toast("Result copied");
+  discCheck.style.display="inline-block";
+  setTimeout(()=>discCheck.style.display="none",1500);
 };
 
-/* OCR */
-const ocrZone = document.getElementById("ocrZone");
-const ocrResult = document.getElementById("ocrResult");
+/* ── OCR ── */
+const ocrZone    = document.getElementById("ocrZone");
+const ocrResult  = document.getElementById("ocrResult");
 const copyOCRBtn = document.getElementById("copyOCRBtn");
 
-ocrZone.onclick = () => { ocrZone.focus(); toast("Paste image (Ctrl+V) or drag & drop"); };
+ocrZone.onclick = ()=>{ ocrZone.focus(); toast("Paste image (Ctrl+V) or drop file"); };
 
-ocrZone.addEventListener("paste", (e) => {
+ocrZone.addEventListener("paste",(e)=>{
   for(const item of e.clipboardData.items){
-    if(item.type.startsWith("image")){
-      e.preventDefault();
-      runOCR(item.getAsFile());
-      return;
-    }
+    if(item.type.startsWith("image")){ e.preventDefault(); runOCR(item.getAsFile()); return; }
   }
   toast("Paste an IMAGE (not text)");
 });
 
-ocrZone.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  ocrZone.style.opacity = "0.86";
-});
-
-ocrZone.addEventListener("dragleave", () => {
-  ocrZone.style.opacity = "1";
-});
-
-ocrZone.addEventListener("drop", (e) => {
-  e.preventDefault();
-  ocrZone.style.opacity = "1";
-  const file = e.dataTransfer.files && e.dataTransfer.files[0];
-  if(file && file.type.startsWith("image/")) runOCR(file);
+ocrZone.addEventListener("dragover",(e)=>{e.preventDefault();ocrZone.style.opacity=".7";});
+ocrZone.addEventListener("dragleave",()=>{ocrZone.style.opacity="1";});
+ocrZone.addEventListener("drop",(e)=>{
+  e.preventDefault();ocrZone.style.opacity="1";
+  const file=e.dataTransfer.files&&e.dataTransfer.files[0];
+  if(file&&file.type.startsWith("image/")) runOCR(file);
   else toast("Drop an image file");
 });
 
 function setOcrLoading(){
-  ocrResult.innerHTML = `<span class="loading"><span class="spinner"></span>Scanning...</span>`;
+  ocrResult.style.display="block";
+  ocrResult.innerHTML=`<span class="loading"><span class="spinner"></span>Scanning...</span>`;
 }
 
 async function runOCR(file){
   try{
     setOcrLoading();
     toast("OCR scanning...");
-
-    const dataUrl = await resizeImageToDataURL(file, 1800);
-
-    const { data } = await Tesseract.recognize(
-      dataUrl,
-      "eng+khm",
-      { tessedit_pageseg_mode: 6 }
-    );
-
-    const mixedText = (data.text || "").trim();
-    ocrResult.innerText = mixedText || "No text detected";
-    toast(mixedText ? "OCR done" : "No text detected");
-
+    const dataUrl=await resizeImageToDataURL(file,1800);
+    const {data}=await Tesseract.recognize(dataUrl,"eng+khm",{tessedit_pageseg_mode:6});
+    const mixedText=(data.text||"").trim();
+    ocrResult.innerText=mixedText||"No text detected";
+    ocrResult.style.display="block";
+    toast(mixedText?"OCR complete":"No text detected");
   }catch(err){
     console.error(err);
-    ocrResult.innerText = "OCR failed";
+    ocrResult.innerText="OCR failed";
+    ocrResult.style.display="block";
     toast("OCR failed");
   }
 }
 
-function resizeImageToDataURL(file, maxSize = 1800){
-  return new Promise((resolve, reject) => {
-    const fr = new FileReader();
-    fr.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        let w = img.width;
-        let h = img.height;
-        const scale = Math.min(1, maxSize / Math.max(w, h));
-        w = Math.round(w * scale);
-        h = Math.round(h * scale);
-
-        const c = document.createElement("canvas");
-        c.width = w;
-        c.height = h;
-        const ctx = c.getContext("2d", { willReadFrequently: true });
-        ctx.drawImage(img, 0, 0, w, h);
+function resizeImageToDataURL(file,maxSize=1800){
+  return new Promise((resolve,reject)=>{
+    const fr=new FileReader();
+    fr.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width, h=img.height;
+        const scale=Math.min(1,maxSize/Math.max(w,h));
+        w=Math.round(w*scale); h=Math.round(h*scale);
+        const c=document.createElement("canvas");
+        c.width=w; c.height=h;
+        const ctx=c.getContext("2d",{willReadFrequently:true});
+        ctx.drawImage(img,0,0,w,h);
         resolve(c.toDataURL("image/png"));
       };
-      img.onerror = reject;
-      img.src = fr.result;
+      img.onerror=reject;
+      img.src=fr.result;
     };
-    fr.onerror = reject;
+    fr.onerror=reject;
     fr.readAsDataURL(file);
   });
 }
 
-copyOCRBtn.onclick = () => {
-  navigator.clipboard.writeText(ocrResult.innerText || "");
-  toast("OCR copied");
+copyOCRBtn.onclick=()=>{
+  const t=ocrResult.innerText||"";
+  if(!t||t.trim()===""){toast("Nothing to copy"); return;}
+  navigator.clipboard.writeText(t);
+  toast("OCR text copied");
 };
 </script>
-
 </body>
 </html>
