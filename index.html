@@ -13,7 +13,6 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- FONT CHANGE: Plus Jakarta Sans (clean geometric UI) + JetBrains Mono (crisp monospace) -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
@@ -36,7 +35,6 @@
   --radius:18px;
   --radius-sm:10px;
   --radius-xs:7px;
-  /* ── FONT TOKENS ── */
   --font-ui:'Plus Jakarta Sans', sans-serif;
   --font-mono:'JetBrains Mono', monospace;
 }
@@ -53,7 +51,6 @@ body{
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── NOISE TEXTURE OVERLAY ── */
 body::before{
   content:'';
   position:fixed;
@@ -74,7 +71,6 @@ body::before{
   position:relative;
   z-index:1;
 }
-
 .header-badge{
   display:inline-flex;
   align-items:center;
@@ -92,7 +88,6 @@ body::before{
   box-shadow:var(--shadow-sm);
   font-family: var(--font-ui);
 }
-
 .pulse-dot{
   width:7px; height:7px;
   border-radius:50%;
@@ -100,13 +95,11 @@ body::before{
   box-shadow:0 0 0 0 var(--red-glow);
   animation:pulse-ring 2s ease infinite;
 }
-
 @keyframes pulse-ring{
   0%  { box-shadow:0 0 0 0 var(--red-glow); }
   60% { box-shadow:0 0 0 7px rgba(200,0,26,0); }
   100%{ box-shadow:0 0 0 0 rgba(200,0,26,0); }
 }
-
 .header h1{
   font-family: var(--font-ui);
   font-size:clamp(2.4rem, 6vw, 4rem);
@@ -116,11 +109,7 @@ body::before{
   line-height:1;
   margin-bottom:6px;
 }
-
-.header h1 span{
-  color: var(--red);
-}
-
+.header h1 span{ color: var(--red); }
 .header-sub{
   font-family: var(--font-mono);
   font-size:.72rem;
@@ -128,7 +117,6 @@ body::before{
   letter-spacing:.14em;
   text-transform:uppercase;
 }
-
 .header-rule{
   width:48px; height:3px;
   background:var(--red);
@@ -147,7 +135,6 @@ body::before{
   position:relative;
   z-index:1;
 }
-
 .left-col, .right-col{
   display:flex;
   flex-direction:column;
@@ -165,7 +152,6 @@ body::before{
   overflow:hidden;
   animation:card-up .45s ease both;
 }
-
 .card::before{
   content:'';
   position:absolute;
@@ -176,15 +162,13 @@ body::before{
   transition:opacity .25s ease;
   border-radius:var(--radius) var(--radius) 0 0;
 }
-
 .card:hover::before{ opacity:1; }
-
 .card:nth-child(1){ animation-delay:.05s; }
 .card:nth-child(2){ animation-delay:.12s; }
 .card:nth-child(3){ animation-delay:.18s; }
 .card:nth-child(4){ animation-delay:.24s; }
 .card:nth-child(5){ animation-delay:.30s; }
-
+.card:nth-child(6){ animation-delay:.36s; }
 @keyframes card-up{
   from{ opacity:0; transform:translateY(18px); }
   to  { opacity:1; transform:translateY(0); }
@@ -197,7 +181,6 @@ body::before{
   gap:10px;
   margin-bottom:18px;
 }
-
 .card-icon{
   width:32px; height:32px;
   border-radius:9px;
@@ -208,7 +191,6 @@ body::before{
   justify-content:center;
   flex-shrink:0;
 }
-
 .card-icon svg{
   width:15px; height:15px;
   fill:none;
@@ -217,7 +199,6 @@ body::before{
   stroke-linecap:round;
   stroke-linejoin:round;
 }
-
 .card-title{
   font-size:.7rem;
   font-weight:700;
@@ -238,10 +219,10 @@ label{
   margin:0 0 5px;
   font-family: var(--font-ui);
 }
-
 input[type="text"],
 input[type="number"],
-textarea{
+textarea,
+select{
   width:100%;
   padding:10px 12px;
   border-radius:var(--radius-sm);
@@ -256,19 +237,26 @@ textarea{
   outline:none;
   letter-spacing:.01em;
 }
-
-input:focus, textarea:focus{
+input:focus, textarea:focus, select:focus{
   border-color:var(--red);
   box-shadow:0 0 0 3px var(--red-light);
   background:var(--surface);
 }
-
 textarea{
   min-height:82px;
   resize:vertical;
   font-family: var(--font-mono);
 }
-
+select{
+  appearance:none;
+  -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239898A8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+  padding-right:36px;
+  cursor:pointer;
+  font-family: var(--font-ui);
+}
 .field-group{ margin-bottom:4px; }
 
 /* ── BUTTONS ── */
@@ -292,18 +280,43 @@ textarea{
   transition:all .18s ease;
   box-shadow:0 4px 14px var(--red-glow);
 }
-
 .btn-primary:hover{
   background:#A8001A;
   transform:translateY(-1px);
   box-shadow:0 6px 20px rgba(200,0,26,.32);
 }
-
 .btn-primary:active{
   transform:translateY(0);
   box-shadow:0 2px 8px var(--red-glow);
 }
-
+.btn-primary:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+  box-shadow:0 4px 14px var(--red-glow);
+}
+.btn-ghost{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:9px 14px;
+  border-radius:999px;
+  border:1.5px solid var(--border);
+  background:var(--surface2);
+  color:var(--text-muted);
+  font-family: var(--font-ui);
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.03em;
+  cursor:pointer;
+  transition:all .18s ease;
+}
+.btn-ghost:hover{
+  border-color:var(--red);
+  color:var(--red);
+  background:var(--red-light);
+}
 .check-icon{
   display:none;
   animation:pop .25s ease-out;
@@ -329,15 +342,8 @@ textarea{
   line-height:1.6;
   letter-spacing:.01em;
 }
-
-.output:empty{
-  display:none;
-}
-
-.output a{
-  color:var(--red);
-  word-break:break-all;
-}
+.output:empty{ display:none; }
+.output a{ color:var(--red); word-break:break-all; }
 
 /* ── SEGMENTED CONTROL ── */
 .segmented{
@@ -350,7 +356,6 @@ textarea{
   gap:4px;
   margin:0 0 12px;
 }
-
 .seg-btn{
   flex:1;
   border:none;
@@ -365,22 +370,18 @@ textarea{
   color:var(--text-muted);
   transition:all .18s ease;
 }
-
 .seg-btn:hover{ background:var(--surface); color:var(--text); }
-
 .seg-btn.active{
   background:var(--red);
   color:#fff;
   box-shadow:0 2px 10px var(--red-glow);
 }
-
 .seg-right{
   flex:1;
   display:flex;
   align-items:center;
   gap:7px;
 }
-
 .days-badge{
   font-family: var(--font-mono);
   font-size:.68rem;
@@ -410,7 +411,6 @@ textarea{
   letter-spacing:.02em;
   font-family: var(--font-ui);
 }
-
 .zone:hover{
   border-color:var(--red);
   background:var(--red-light);
@@ -424,6 +424,101 @@ textarea{
   gap:0 14px;
 }
 
+/* ── TRANSLATE SPECIFICS ── */
+.translate-lang-row{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:8px;
+  align-items:end;
+  margin-bottom:4px;
+}
+.swap-btn{
+  width:36px; height:36px;
+  min-width:36px;
+  border-radius:50%;
+  border:1.5px solid var(--border);
+  background:var(--surface2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:all .2s ease;
+  margin-bottom:12px;
+  flex-shrink:0;
+}
+.swap-btn:hover{
+  border-color:var(--red);
+  background:var(--red-light);
+  transform:rotate(180deg);
+}
+.swap-btn svg{
+  width:14px; height:14px;
+  fill:none;
+  stroke:var(--text-muted);
+  stroke-width:2.2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  transition:stroke .2s ease;
+}
+.swap-btn:hover svg{ stroke:var(--red); }
+
+.translate-out-wrap{
+  position:relative;
+  margin-top:10px;
+}
+.translate-output{
+  font-family: var(--font-mono);
+  font-size:.84rem;
+  color:var(--text);
+  padding:12px 14px;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  min-height:76px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.translate-output.empty-state{
+  color:var(--text-subtle);
+  font-style:italic;
+  font-size:.79rem;
+}
+.translate-meta{
+  font-family: var(--font-ui);
+  font-size:.67rem;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--text-subtle);
+  margin-top:6px;
+  display:none;
+}
+.translate-confidence{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+.conf-bar{
+  width:40px; height:4px;
+  border-radius:999px;
+  background:var(--border);
+  overflow:hidden;
+}
+.conf-fill{
+  height:100%;
+  border-radius:999px;
+  background:var(--red);
+  transition:width .3s ease;
+}
+.translate-btn-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  margin-top:8px;
+  align-items:center;
+}
+
 /* ── OCR LOADING ── */
 .loading{
   display:inline-flex;
@@ -434,7 +529,6 @@ textarea{
   font-weight:400;
   color:var(--text-muted);
 }
-
 .spinner{
   width:15px; height:15px;
   border-radius:50%;
@@ -442,7 +536,6 @@ textarea{
   border-top-color:var(--red);
   animation:spin .75s linear infinite;
 }
-
 @keyframes spin{ to{ transform:rotate(360deg); } }
 
 /* ── TOAST ── */
@@ -469,14 +562,12 @@ textarea{
   white-space:nowrap;
   letter-spacing:.01em;
 }
-
 #toast .t-dot{
   width:7px; height:7px;
   border-radius:50%;
   background:var(--red);
   flex-shrink:0;
 }
-
 #toast.show{
   opacity:1;
   transform:translateX(-50%) translateY(0);
@@ -484,13 +575,9 @@ textarea{
 
 /* ── FLATPICKR OVERRIDES ── */
 .flatpickr-calendar{
-  width:276px !important;
-  min-width:276px !important;
-  max-width:276px !important;
-  padding:8px 10px 10px !important;
-  border-radius:14px !important;
-  box-shadow:var(--shadow-lg) !important;
-  border:1px solid var(--border) !important;
+  width:276px !important; min-width:276px !important; max-width:276px !important;
+  padding:8px 10px 10px !important; border-radius:14px !important;
+  box-shadow:var(--shadow-lg) !important; border:1px solid var(--border) !important;
   background:#fff !important;
 }
 .flatpickr-innerContainer{ display:block !important; }
@@ -534,6 +621,7 @@ span.flatpickr-weekday{ color:var(--text-muted) !important; font-weight:700 !imp
 @media(max-width:768px){
   .container{ grid-template-columns:1fr; }
   .disc-grid{ grid-template-columns:1fr; }
+  .translate-lang-row{ grid-template-columns:1fr auto 1fr; }
 }
 </style>
 </head>
@@ -545,8 +633,8 @@ span.flatpickr-weekday{ color:var(--text-muted) !important; font-weight:700 !imp
     <span class="pulse-dot"></span>
     Underwriting Toolkit
   </div>
-  <h1> <span>KLAB JAB</span> <span style="font-size:.55em; color:var(--text-subtle); font-weight:600; letter-spacing:.03em;">2.0</span></h1>
-  <p class="header-sub">Steav - Khob Sari - Nheak </p>
+  <h1><span>KLAB JAB</span> <span style="font-size:.55em; color:var(--text-subtle); font-weight:600; letter-spacing:.03em;">2.0</span></h1>
+  <p class="header-sub">Steav - Khob Sari - Nheak</p>
   <div class="header-rule"></div>
 </header>
 
@@ -564,22 +652,18 @@ span.flatpickr-weekday{ color:var(--text-muted) !important; font-weight:700 !imp
         </div>
         <span class="card-title">Effective Converter</span>
       </div>
-
       <div class="field-group">
         <label>Policy Start Date</label>
         <input type="text" id="start" placeholder="Select start date" autocomplete="off">
       </div>
-
       <div class="field-group">
         <label>Policy End Date</label>
         <input type="text" id="end" placeholder="Select end date" autocomplete="off">
       </div>
-
       <div class="field-group">
         <label>Period Text</label>
         <input type="text" id="text" readonly>
       </div>
-
       <div class="segmented">
         <button class="seg-btn active" id="btn1y" type="button">1 Year</button>
         <div class="seg-right">
@@ -587,12 +671,98 @@ span.flatpickr-weekday{ color:var(--text-muted) !important; font-weight:700 !imp
           <span class="days-badge" id="daysBadge">365 DAYS</span>
         </div>
       </div>
-
       <button class="btn-primary" id="copyEffective" type="button">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         Copy Effective
         <i id="effectiveCheck" class="fa-solid fa-calendar-check check-icon"></i>
       </button>
+    </div>
+
+    <!-- TRANSLATE -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+        </div>
+        <span class="card-title">Translate</span>
+      </div>
+
+      <!-- LANG SELECTORS -->
+      <div class="translate-lang-row">
+        <div class="field-group" style="margin-bottom:0">
+          <label>From</label>
+          <select id="transFrom">
+            <option value="en">🇬🇧 English</option>
+            <option value="km">🇰🇭 Khmer</option>
+            <option value="zh">🇨🇳 Chinese</option>
+            <option value="ja">🇯🇵 Japanese</option>
+            <option value="ko">🇰🇷 Korean</option>
+            <option value="fr">🇫🇷 French</option>
+            <option value="de">🇩🇪 German</option>
+            <option value="es">🇪🇸 Spanish</option>
+            <option value="th">🇹🇭 Thai</option>
+            <option value="vi">🇻🇳 Vietnamese</option>
+            <option value="id">🇮🇩 Indonesian</option>
+            <option value="ms">🇲🇾 Malay</option>
+            <option value="ar">🇸🇦 Arabic</option>
+            <option value="ru">🇷🇺 Russian</option>
+            <option value="pt">🇵🇹 Portuguese</option>
+          </select>
+        </div>
+        <button class="swap-btn" id="swapLangs" type="button" title="Swap languages">
+          <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+        </button>
+        <div class="field-group" style="margin-bottom:0">
+          <label>To</label>
+          <select id="transTo">
+            <option value="km">🇰🇭 Khmer</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="zh">🇨🇳 Chinese</option>
+            <option value="ja">🇯🇵 Japanese</option>
+            <option value="ko">🇰🇷 Korean</option>
+            <option value="fr">🇫🇷 French</option>
+            <option value="de">🇩🇪 German</option>
+            <option value="es">🇪🇸 Spanish</option>
+            <option value="th">🇹🇭 Thai</option>
+            <option value="vi">🇻🇳 Vietnamese</option>
+            <option value="id">🇮🇩 Indonesian</option>
+            <option value="ms">🇲🇾 Malay</option>
+            <option value="ar">🇸🇦 Arabic</option>
+            <option value="ru">🇷🇺 Russian</option>
+            <option value="pt">🇵🇹 Portuguese</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- INPUT -->
+      <div class="field-group" style="margin-top:10px;">
+        <label>Source Text</label>
+        <textarea id="transInput" placeholder="Type or paste text to translate…" style="min-height:90px;margin-bottom:0;"></textarea>
+      </div>
+
+      <!-- OUTPUT -->
+      <div class="translate-out-wrap">
+        <div class="translate-output empty-state" id="transOutput">Translation will appear here…</div>
+        <div class="translate-meta" id="transMeta">
+          <span id="transLangDetected"></span>
+          <span class="translate-confidence">
+            Quality: <span class="conf-bar"><span class="conf-fill" id="confFill" style="width:0%"></span></span>
+            <span id="confPct"></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="translate-btn-row">
+        <button class="btn-primary" id="translateBtn" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+          <span id="translateBtnLabel">Translate</span>
+        </button>
+        <button class="btn-ghost" id="copyTransBtn" type="button" title="Copy translation">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy
+        </button>
+      </div>
     </div>
 
     <!-- OCR SCAN -->
@@ -660,7 +830,6 @@ span.flatpickr-weekday{ color:var(--text-muted) !important; font-weight:700 !imp
         </div>
         <span class="card-title">Discount Calculator</span>
       </div>
-
       <div class="disc-grid">
         <div class="field-group">
           <label>Before Discount</label>
@@ -671,14 +840,11 @@ span.flatpickr-weekday{ color:var(--text-muted) !important; font-weight:700 !imp
           <input type="number" id="afterAmt" min="0" step="0.01" placeholder="0.00">
         </div>
       </div>
-
       <div class="field-group">
         <label>Discount %</label>
         <input type="number" id="discPct" placeholder="e.g. 15" step="0.01" min="0" max="99.99">
       </div>
-
       <div id="discOut" class="output"></div>
-
       <button class="btn-primary" id="copyDisc" type="button">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         Copy Result
@@ -696,7 +862,9 @@ span.flatpickr-weekday{ color:var(--text-muted) !important; font-weight:700 !imp
 </div>
 
 <script>
-/* ── TOAST ── */
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
 const toastEl  = document.getElementById("toast");
 const toastMsg = document.getElementById("toastMsg");
 let toastTimer = null;
@@ -707,7 +875,9 @@ function toast(msg){
   toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
 }
 
-/* ── EFFECTIVE CONVERTER ── */
+/* ══════════════════════════════════════════════
+   EFFECTIVE CONVERTER
+══════════════════════════════════════════════ */
 const startInput     = document.getElementById("start");
 const endInput       = document.getElementById("end");
 const textInput      = document.getElementById("text");
@@ -723,15 +893,12 @@ let startPicker, endPicker;
 function formatDisplayDate(date){
   return date.toLocaleDateString("en-GB",{day:"2-digit",month:"long",year:"numeric"});
 }
-
 function updateDaysBadge(){
   daysBadge.textContent = `${days} DAYS`;
 }
-
 function updatePeriodText(s,e){
   textInput.value = `From ${formatDisplayDate(s)} to ${formatDisplayDate(e)} (Both dates inclusive)`;
 }
-
 function calcThreeMonthEnd(startDate){
   const e = new Date(startDate);
   const originalDay = e.getDate();
@@ -742,17 +909,12 @@ function calcThreeMonthEnd(startDate){
   e.setDate(e.getDate() - 1);
   return e;
 }
-
 function calcEffective(selectedDate){
   const s = selectedDate || startPicker.selectedDates[0];
   if(!s) return;
   let e;
-  if(days === "3m"){
-    e = calcThreeMonthEnd(s);
-  } else {
-    e = new Date(s);
-    e.setDate(e.getDate() + days - 1);
-  }
+  if(days === "3m"){ e = calcThreeMonthEnd(s); }
+  else { e = new Date(s); e.setDate(e.getDate() + days - 1); }
   endPicker.setDate(e, true);
   updatePeriodText(s, e);
   const actualDays = Math.round((e - s)/(1000*60*60*24)) + 1;
@@ -770,7 +932,6 @@ startPicker = flatpickr("#start",{
     calcEffective(selectedDates[0]);
   }
 });
-
 endPicker = flatpickr("#end",{
   dateFormat:"d M Y",
   allowInput:false,
@@ -793,10 +954,8 @@ function setActive(btn){
   document.querySelectorAll(".seg-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
 }
-
 btn1y.onclick = () => { days=365; setActive(btn1y); updateDaysBadge(); calcEffective(); toast("1 Year selected"); };
 btn3m.onclick = () => { days="3m"; setActive(btn3m); calcEffective(); toast("3 Months selected"); };
-
 copyEffective.onclick = async () => {
   if(!textInput.value){ toast("No date selected"); return; }
   await navigator.clipboard.writeText(textInput.value);
@@ -804,11 +963,169 @@ copyEffective.onclick = async () => {
   toast("Effective dates copied");
   setTimeout(()=>effectiveCheck.style.display="none", 1500);
 };
-
 updateDaysBadge();
 calcEffective();
 
-/* ── TITLE CONVERTER ── */
+/* ══════════════════════════════════════════════
+   TRANSLATE  (MyMemory free API — no key needed)
+══════════════════════════════════════════════ */
+const transFrom      = document.getElementById("transFrom");
+const transTo        = document.getElementById("transTo");
+const transInput     = document.getElementById("transInput");
+const transOutput    = document.getElementById("transOutput");
+const transMeta      = document.getElementById("transMeta");
+const transLangDetected = document.getElementById("transLangDetected");
+const confFill       = document.getElementById("confFill");
+const confPct        = document.getElementById("confPct");
+const translateBtn   = document.getElementById("translateBtn");
+const translateBtnLabel = document.getElementById("translateBtnLabel");
+const copyTransBtn   = document.getElementById("copyTransBtn");
+const swapLangs      = document.getElementById("swapLangs");
+
+let lastTranslation  = "";
+let translateDebounce = null;
+
+// Language display names for meta label
+const LANG_NAMES = {
+  en:"English", km:"Khmer", zh:"Chinese", ja:"Japanese", ko:"Korean",
+  fr:"French", de:"German", es:"Spanish", th:"Thai", vi:"Vietnamese",
+  id:"Indonesian", ms:"Malay", ar:"Arabic", ru:"Russian", pt:"Portuguese"
+};
+
+swapLangs.onclick = () => {
+  const fromVal = transFrom.value;
+  const toVal   = transTo.value;
+  // Set "From" to current "To"
+  transFrom.value = toVal;
+  transTo.value   = fromVal;
+  // If there's already a translation, swap and re-translate
+  if(lastTranslation){
+    transInput.value = lastTranslation;
+    runTranslate();
+  }
+  toast(`Swapped: ${LANG_NAMES[toVal]} → ${LANG_NAMES[fromVal]}`);
+};
+
+// Auto-translate on paste
+transInput.addEventListener("paste", () => {
+  clearTimeout(translateDebounce);
+  translateDebounce = setTimeout(runTranslate, 300);
+});
+
+// Auto-translate on input (debounced 800ms)
+transInput.addEventListener("input", () => {
+  clearTimeout(translateDebounce);
+  translateDebounce = setTimeout(runTranslate, 800);
+});
+
+translateBtn.onclick = () => runTranslate();
+
+async function runTranslate(){
+  const text = transInput.value.trim();
+  if(!text){
+    transOutput.textContent = "Translation will appear here…";
+    transOutput.className = "translate-output empty-state";
+    transMeta.style.display = "none";
+    lastTranslation = "";
+    return;
+  }
+
+  const from = transFrom.value;
+  const to   = transTo.value;
+
+  if(from === to){
+    transOutput.textContent = text;
+    transOutput.className = "translate-output";
+    lastTranslation = text;
+    transMeta.style.display = "none";
+    toast("Source and target language are the same");
+    return;
+  }
+
+  // Loading state
+  translateBtn.disabled = true;
+  translateBtnLabel.textContent = "Translating…";
+  transOutput.innerHTML = `<span class="loading"><span class="spinner"></span>Translating…</span>`;
+  transOutput.className = "translate-output";
+  transMeta.style.display = "none";
+
+  try {
+    // Chunk large text (MyMemory limit ~500 chars per request)
+    const CHUNK_SIZE = 480;
+    const chunks = chunkText(text, CHUNK_SIZE);
+    const results = [];
+
+    for(const chunk of chunks){
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${from}|${to}`;
+      const res  = await fetch(url);
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      if(data.responseStatus !== 200 && data.responseStatus !== "200"){
+        // Try fallback with simple langpair
+        throw new Error(data.responseMessage || "Translation failed");
+      }
+      results.push({
+        text: data.responseData.translatedText,
+        match: data.responseData.match || 0
+      });
+    }
+
+    const combined = results.map(r => r.text).join(" ");
+    const avgMatch = results.reduce((s,r) => s + r.match, 0) / results.length;
+
+    lastTranslation = combined;
+    transOutput.textContent = combined;
+    transOutput.className = "translate-output";
+
+    // Show meta
+    const pct = Math.round(avgMatch * 100);
+    transLangDetected.textContent = `${LANG_NAMES[from] || from} → ${LANG_NAMES[to] || to} · `;
+    confFill.style.width = `${Math.min(pct, 100)}%`;
+    confPct.textContent = `${pct}%`;
+    transMeta.style.display = "flex";
+    transMeta.style.alignItems = "center";
+    transMeta.style.gap = "4px";
+
+    toast("Translation complete");
+  } catch(err){
+    console.error("Translation error:", err);
+    transOutput.textContent = "⚠ Translation failed. Please check your connection and try again.";
+    transOutput.className = "translate-output";
+    lastTranslation = "";
+    toast("Translation failed");
+  } finally {
+    translateBtn.disabled = false;
+    translateBtnLabel.textContent = "Translate";
+  }
+}
+
+function chunkText(text, size){
+  // Split by sentences first, then chunk
+  const sentences = text.match(/[^.!?\n]+[.!?\n]?/g) || [text];
+  const chunks = [];
+  let current = "";
+  for(const s of sentences){
+    if((current + s).length > size && current.length > 0){
+      chunks.push(current.trim());
+      current = s;
+    } else {
+      current += s;
+    }
+  }
+  if(current.trim()) chunks.push(current.trim());
+  return chunks.length ? chunks : [text.slice(0, size)];
+}
+
+copyTransBtn.onclick = () => {
+  if(!lastTranslation){ toast("Nothing to copy"); return; }
+  navigator.clipboard.writeText(lastTranslation);
+  toast("Translation copied");
+};
+
+/* ══════════════════════════════════════════════
+   TITLE CONVERTER
+══════════════════════════════════════════════ */
 const paste      = document.getElementById("paste");
 const out        = document.getElementById("out");
 const convertCopy= document.getElementById("convertCopy");
@@ -825,14 +1142,15 @@ function convertTitle(){
 convertCopy.onclick = convertTitle;
 paste.addEventListener("paste", ()=>setTimeout(convertTitle,50));
 
-/* ── QR SCANNER ── */
+/* ══════════════════════════════════════════════
+   QR SCANNER
+══════════════════════════════════════════════ */
 const qrZone   = document.getElementById("qrZone");
 const qrFile   = document.getElementById("qrFile");
 const qrResult = document.getElementById("qrResult");
 
 qrZone.onclick = ()=>{ qrZone.focus(); toast("Paste QR image (Ctrl+V)"); };
 qrFile.onchange = ()=>{ if(qrFile.files&&qrFile.files[0]) scanQR(qrFile.files[0]); };
-
 qrZone.addEventListener("paste",(e)=>{
   for(const item of e.clipboardData.items){
     if(item.type.startsWith("image")){ e.preventDefault(); scanQR(item.getAsFile()); return; }
@@ -855,7 +1173,6 @@ async function scanQR(file){
   if(url) showQrSuccess(url);
   else{ qrResult.textContent="QR not detected"; toast("QR not detected"); }
 }
-
 function showQrSuccess(url){
   qrResult.innerHTML=`QR: <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
   qrResult.style.display="block";
@@ -863,7 +1180,6 @@ function showQrSuccess(url){
   const w = window.open(url,"_blank","noopener,noreferrer");
   if(!w) toast("Popup blocked - tap the link");
 }
-
 function scanWithJsQREnhanced(file){
   return new Promise((resolve)=>{
     const r=new FileReader();
@@ -902,7 +1218,9 @@ function scanWithJsQREnhanced(file){
   });
 }
 
-/* ── DISCOUNT CALCULATOR ── */
+/* ══════════════════════════════════════════════
+   DISCOUNT CALCULATOR
+══════════════════════════════════════════════ */
 const beforeAmt = document.getElementById("beforeAmt");
 const afterAmt  = document.getElementById("afterAmt");
 const discPct   = document.getElementById("discPct");
@@ -916,7 +1234,6 @@ afterAmt.addEventListener("input", ()=>{ discLastEdited="after";  calcDiscount()
 discPct.addEventListener("input", calcDiscount);
 
 function fmtMoney(n){ return Number.isFinite(n)?`$${n.toFixed(2)}`:""; }
-
 function calcDiscount(){
   const b=parseFloat(beforeAmt.value);
   const a=parseFloat(afterAmt.value);
@@ -941,7 +1258,6 @@ function calcDiscount(){
   }
   return "";
 }
-
 copyDisc.onclick = async ()=>{
   const txt=calcDiscount();
   if(!txt){ toast("Enter amount + discount %"); return; }
@@ -951,20 +1267,20 @@ copyDisc.onclick = async ()=>{
   setTimeout(()=>discCheck.style.display="none",1500);
 };
 
-/* ── OCR ── */
+/* ══════════════════════════════════════════════
+   OCR
+══════════════════════════════════════════════ */
 const ocrZone    = document.getElementById("ocrZone");
 const ocrResult  = document.getElementById("ocrResult");
 const copyOCRBtn = document.getElementById("copyOCRBtn");
 
 ocrZone.onclick = ()=>{ ocrZone.focus(); toast("Paste image (Ctrl+V) or drop file"); };
-
 ocrZone.addEventListener("paste",(e)=>{
   for(const item of e.clipboardData.items){
     if(item.type.startsWith("image")){ e.preventDefault(); runOCR(item.getAsFile()); return; }
   }
   toast("Paste an IMAGE (not text)");
 });
-
 ocrZone.addEventListener("dragover",(e)=>{e.preventDefault();ocrZone.style.opacity=".7";});
 ocrZone.addEventListener("dragleave",()=>{ocrZone.style.opacity="1";});
 ocrZone.addEventListener("drop",(e)=>{
@@ -978,7 +1294,6 @@ function setOcrLoading(){
   ocrResult.style.display="block";
   ocrResult.innerHTML=`<span class="loading"><span class="spinner"></span>Scanning...</span>`;
 }
-
 async function runOCR(file){
   try{
     setOcrLoading();
@@ -996,7 +1311,6 @@ async function runOCR(file){
     toast("OCR failed");
   }
 }
-
 function resizeImageToDataURL(file,maxSize=1800){
   return new Promise((resolve,reject)=>{
     const fr=new FileReader();
@@ -1019,7 +1333,6 @@ function resizeImageToDataURL(file,maxSize=1800){
     fr.readAsDataURL(file);
   });
 }
-
 copyOCRBtn.onclick=()=>{
   const t=ocrResult.innerText||"";
   if(!t||t.trim()===""){toast("Nothing to copy"); return;}
